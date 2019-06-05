@@ -12,12 +12,14 @@
 package org.eclipse.sw360.antenna.p2resolver;
 
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
+import org.eclipse.sw360.antenna.model.util.ClassCodeSourceLocation;
 import org.eclipse.sw360.antenna.util.ZipExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.jar.JarFile;
 
 import static org.eclipse.sw360.antenna.p2resolver.OperatingSystemSpecifics.getProductNameForOS;
@@ -30,14 +32,17 @@ public final class P2RepositoryExtractor {
     }
 
     public static void installEclipseProductForP2Resolution(String extractionLocation) throws AntennaException {
-        String location = P2RepositoryExtractor.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String location = "";
         try (JarFile jar = new JarFile(location)) {
+            location = ClassCodeSourceLocation.getClassCodeSourceLocationAsString(P2RepositoryExtractor.class);
             P2RepositoryExtractor.extractProductFromJar(extractionLocation, location);
         } catch (IOException e) {
             LOGGER.warn("Jar could not be extracted. " +
                     "Trying to extract from filesystem, but this will only work in tests." +
                     "If this message pops up during normal execution, the installation of eclipse failed.");
             P2RepositoryExtractor.extractProductFromFilesystem(extractionLocation, location);
+        } catch (URISyntaxException e) {
+            throw new AntennaException("There was a problem parsing the class  code source location of " + P2RepositoryExtractor.class);
         }
     }
 
