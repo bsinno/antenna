@@ -16,11 +16,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.artifact.facts.dotnet.DotNetCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.javaScript.JavaScriptCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.slf4j.Logger;
@@ -139,15 +136,15 @@ public class CsvAnalyzerImpl {
 
         switch (type) {
             case "mvn":
-                return new MavenCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
+                return ArtifactCoordinatesUtils.mkMavenCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
             case "dotnet":
-                return new DotNetCoordinates(record.get(NAME), record.get(VERSION));
+                return ArtifactCoordinatesUtils.mkDotNetCoordinates(record.get(NAME), record.get(VERSION));
             case "javascript":
-                return new JavaScriptCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
+                return ArtifactCoordinatesUtils.mkJavaScriptCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
             case "bundle":
-                return new BundleCoordinates(record.get(NAME), record.get(VERSION));
+                return ArtifactCoordinatesUtils.mkBundleCoordinates(record.get(NAME), record.get(VERSION));
             default:
-                return new GenericArtifactCoordinates(record.get(NAME), record.get(VERSION));
+                return new ArtifactCoordinates(record.get(NAME), record.get(VERSION));
         }
     }
 

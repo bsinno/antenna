@@ -10,8 +10,8 @@
  */
 package org.eclipse.sw360.antenna.model.test;
 
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
-import org.eclipse.sw360.antenna.model.artifact.facts.GenericArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.model.reporting.ProcessingMessage;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class MessageTest {
 
     @Before
     public void init() {
-        id = new GenericArtifactCoordinates("Name", "Version");
+        id = new ArtifactCoordinates("Name", "Version");
         this.failure = new ProcessingMessage(MessageType.UNKNOWN_LICENSE, id.toString(), "test");
     }
 

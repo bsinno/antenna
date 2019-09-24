@@ -14,11 +14,10 @@ import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.model.Configuration;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCore;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
 import org.eclipse.sw360.antenna.model.artifact.facts.DeclaredLicenseInformation;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
 import org.eclipse.sw360.antenna.model.xml.generated.AntennaConfig;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
@@ -95,7 +94,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void overridesTest() {
+    public void overridesTest() throws Exception {
         assertThat(configuration.getOverride().size()).isEqualTo(2);
 
         ArtifactIdentifier artifactIdentifier = new ArtifactFilename("overrideAll.jar");
@@ -112,36 +111,20 @@ public class ConfigurationTest {
 
         assertThat(generatedArtifact.askFor(ArtifactFilename.class).get().getFilenames())
                 .contains("overrideName.jar");
-        assertThat(generatedArtifact.askFor(MavenCoordinates.class).get().getArtifactId())
-                .isEqualTo("testID");
-        assertThat(generatedArtifact.askFor(MavenCoordinates.class).get().getGroupId())
-                .isEqualTo("testGroupId");
-        assertThat(generatedArtifact.askFor(MavenCoordinates.class).get().getVersion())
-                .isEqualTo("testVersion");
-        assertThat(generatedArtifact.askFor(BundleCoordinates.class).get().getSymbolicName())
-                .isEqualTo("testName");
-        assertThat(generatedArtifact.askFor(BundleCoordinates.class).get().getBundleVersion())
-                .isEqualTo("testVersion");
+        assertThat(generatedArtifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:maven/testGroupId/testID@testVersion")).isTrue();
+        assertThat(generatedArtifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:p2/testName@testVersion")).isTrue();
     }
 
     @Test
-    public void addArtifactTest() {
+    public void addArtifactTest() throws Exception {
         Artifact artifact = configuration.getAddArtifact().get(0);
 
         assertThat(artifact.askForGet(DeclaredLicenseInformation.class).get().getLicenses().get(0).getName())
                 .isEqualTo("Apache");
         assertThat(artifact.askFor(ArtifactFilename.class).get().getFilenames())
                 .contains("addArtifact.jar");
-        assertThat(artifact.askFor(MavenCoordinates.class).get().getArtifactId())
-                .isEqualTo("addArtifactId");
-        assertThat(artifact.askFor(MavenCoordinates.class).get().getGroupId())
-                .isEqualTo("addGroupId");
-        assertThat(artifact.askFor(MavenCoordinates.class).get().getVersion())
-                .isEqualTo("addVersion");
-        assertThat(artifact.askFor(BundleCoordinates.class).get().getSymbolicName())
-                .isEqualTo("addSymbolicName");
-        assertThat(artifact.askFor(BundleCoordinates.class).get().getBundleVersion())
-                .isEqualTo("addBundleVersion");
+        assertThat(artifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:maven/addGroupId/addArtifactId@addVersion")).isTrue();
+        assertThat(artifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:p2/addSymbolicName@addBundleVersion")).isTrue();
         assertThat(artifact.isProprietary())
                 .isFalse();
         assertThat(artifact.getMatchState())

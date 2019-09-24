@@ -11,13 +11,13 @@
 
 package org.eclipse.sw360.antenna.workflow.generators;
 
+import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.api.IAttachable;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.api.workflow.AbstractGenerator;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.api.Attachable;
@@ -28,10 +28,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  *
@@ -73,13 +70,35 @@ public class CSVGenerator extends AbstractGenerator {
                     .flatMap(ArtifactFilename::getBestFilenameEntryGuess)
                     .map(ArtifactFilename.ArtifactFilenameEntry::getFilename)
                     .orElse(""));
-            final Optional<MavenCoordinates> mavenCoordinates = artifact.askFor(MavenCoordinates.class); // TODO
-            appendInformation(information, mavenCoordinates.map(MavenCoordinates::getArtifactId).orElse(""));
-            appendInformation(information, mavenCoordinates.map(MavenCoordinates::getGroupId).orElse(""));
-            appendInformation(information, mavenCoordinates.map(MavenCoordinates::getVersion).orElse(""));
 
-            final Optional<BundleCoordinates> bundleCoordinates = artifact.askFor(BundleCoordinates.class); // TODO
-            appendInformation(information, bundleCoordinates.map(BundleCoordinates::getBundleVersion).orElse(""));
+            final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
+            if(artifactCoordinates.isPresent()) {
+                final Set<PackageURL> purls = artifactCoordinates.get().getPurls();
+                final Optional<PackageURL> mavenPURL = purls.stream()
+                        .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
+                        .findFirst();
+                if(mavenPURL.isPresent()) {
+                    appendInformation(information, mavenPURL.get().getName());
+                    appendInformation(information, mavenPURL.get().getNamespace());
+                    appendInformation(information, mavenPURL.get().getVersion());
+                } else {
+                    appendInformation(information, "");
+                    appendInformation(information, "");
+                    appendInformation(information, "");
+                }
+
+                final Optional<PackageURL> bundlePURL = purls.stream()
+                        .filter(packageURL -> "p2".equals(packageURL.getType()))
+                        .findFirst();
+                if(bundlePURL.isPresent()) {
+                    // appendInformation(information, bundlePURL.get().getName());
+                    appendInformation(information, bundlePURL.get().getVersion());
+                } else {
+                    // appendInformation(information, "");
+                    appendInformation(information, "");
+                }
+            }
+
             LicenseInformation finalLicenses = ArtifactLicenseUtils.getFinalLicenses(artifact);
             StringBuilder licenses = new StringBuilder();
             if (finalLicenses.evaluateLong() != null) {

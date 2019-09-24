@@ -15,8 +15,7 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorAndSet;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -201,8 +200,8 @@ public class ArtifactSelectorTest {
                                     String bundleVersion, String symbolicName) {
         Artifact artifact = new Artifact();
         artifact.addFact(new ArtifactFilename(defaultFileName, hash));
-        artifact.addFact(new MavenCoordinates(artifactId, groupId, version));
-        artifact.addFact(new BundleCoordinates(symbolicName, bundleVersion));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(artifactId, groupId, version));
+        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates(symbolicName, bundleVersion));
         return artifact;
     }
 
@@ -214,10 +213,10 @@ public class ArtifactSelectorTest {
             identifierSet.add(new ArtifactFilename(filename, hash));
         }
         if(artifactId != null || groupId != null || version != null) {
-            identifierSet.add(new MavenCoordinates(artifactId, groupId, version));
+            identifierSet.add(ArtifactCoordinatesUtils.mkMavenCoordinates(artifactId, groupId, version));
         }
         if(symbolicName != null || bundleVersion != null) {
-            identifierSet.add(new BundleCoordinates(symbolicName, bundleVersion));
+            identifierSet.add(ArtifactCoordinatesUtils.mkBundleCoordinates(symbolicName, bundleVersion));
         }
         return new ArtifactSelectorAndSet(identifierSet);
     }

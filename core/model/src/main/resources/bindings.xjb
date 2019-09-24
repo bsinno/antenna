@@ -16,19 +16,19 @@
     <jxb:bindings schemaLocation="config.xsd">
 
         <jxb:bindings node="//xsd:complexType[@name='mavenCoordinates']">
-            <jxb:class name="FromXmlMavenCoordinates" ref="org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates.MavenCoordinatesBuilder"/>
+            <jxb:class name="FromXmlMavenCoordinates" ref="org.eclipse.sw360.antenna.model.artifact.FromXmlArtifactBuilder.MavenCoordinatesBuilder"/>
         </jxb:bindings>
 
         <jxb:bindings node="//xsd:complexType[@name='bundleCoordinates']">
-            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates.BundleCoordinatesBuilder"/>
+            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.FromXmlArtifactBuilder.BundleCoordinatesBuilder"/>
         </jxb:bindings>
 
         <jxb:bindings node="//xsd:complexType[@name='javaScriptCoordinates']">
-            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.facts.javaScript.JavaScriptCoordinates.JavaScriptCoordinatesBuilder"/>
+            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.FromXmlArtifactBuilder.JavaScriptCoordinatesBuilder"/>
         </jxb:bindings>
 
         <jxb:bindings node="//xsd:complexType[@name='dotNetCoordinates']">
-            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.facts.dotnet.DotNetCoordinates.DotNetCoordinatesBuilder"/>
+            <jxb:class ref="org.eclipse.sw360.antenna.model.artifact.FromXmlArtifactBuilder.DotNetCoordinatesBuilder"/>
         </jxb:bindings>
 
         <jxb:bindings node="//xsd:complexType[@name='artifact']">
