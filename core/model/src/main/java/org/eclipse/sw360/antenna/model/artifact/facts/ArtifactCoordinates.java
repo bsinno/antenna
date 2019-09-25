@@ -51,6 +51,12 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
         this.purls.addAll(purlsToAdd);
     }
 
+    public ArtifactCoordinates(Set<String> purlStringsToAdd) throws MalformedPackageURLException {
+        for (String purlStringToAdd: purlStringsToAdd) {
+            purls.add(new PackageURL(purlStringToAdd));
+        }
+    }
+
     public boolean containsPurl(String purlString)  {
         try {
             return containsPurl(new PackageURL(purlString));
@@ -104,5 +110,14 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
         return new ArtifactCoordinates(
                 Stream.concat(purls.stream(), resultWithPrecedence.purls.stream())
                         .collect(Collectors.toList()));
+    }
+
+    public static class StandardTypes extends PackageURL.StandardTypes {
+        public static final String BUNDLE = "p2";
+
+        public static final Set<String> all = Stream.of(
+                BITBUCKET, COMPOSER, DEBIAN, DOCKER, GEM, GENERIC, GITHUB, GOLANG, MAVEN, NPM, NUGET, PYPI, RPM,
+                BUNDLE
+                ).collect(Collectors.toSet());
     }
 }

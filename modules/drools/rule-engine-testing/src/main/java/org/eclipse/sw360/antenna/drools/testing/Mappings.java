@@ -9,13 +9,10 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package org.eclipse.sw360.antenna.droolstesting;
+package org.eclipse.sw360.antenna.drools.testing;
 
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.artifact.facts.dotnet.DotNetCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.javaScript.JavaScriptCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseThreatGroup;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
@@ -59,37 +56,37 @@ public final class Mappings {
                 put("Non-Standard", MissingLicenseReasons.NON_STANDARD);
             }};
 
-    static final Map<String, Function<List<String>, ArtifactCoordinates<?>>> COORDINATES_FACTORY =
-            new HashMap<String, Function<List<String>, ArtifactCoordinates<?>>>() {{
+    static final Map<String, Function<List<String>, ArtifactCoordinates>> COORDINATES_FACTORY =
+            new HashMap<String, Function<List<String>, ArtifactCoordinates>>() {{
                 put("maven", row -> {
                     if (row.size() < 5) {
                         throw new RuntimeException("Maven coordinates need to specify groupId, artifactId and version in that order");
                     }
-                    return new MavenCoordinates(row.get(3), row.get(2), row.get(4));
+                    return ArtifactCoordinatesUtils.mkMavenCoordinates(row.get(3), row.get(2), row.get(4));
                 });
                 put("generic", row -> {
                     if (row.size() < 4) {
                         throw new RuntimeException("Generic coordinates need to specify name and version in that order");
                     }
-                    return new GenericArtifactCoordinates(row.get(2), row.get(3));
+                    return new ArtifactCoordinates(row.get(2), row.get(3));
                 });
                 put("dotnet", row -> {
                     if (row.size() < 4) {
                         throw new RuntimeException(".NET coordinates need to specify packageId and version in that order");
                     }
-                    return new DotNetCoordinates(row.get(2), row.get(3));
+                    return ArtifactCoordinatesUtils.mkDotNetCoordinates(row.get(2), row.get(3));
                 });
                 put("bundle", row -> {
                     if (row.size() < 4) {
                         throw new RuntimeException("Bundle coordinates need to specify BundleSymbolicName and BundleVersion in that order");
                     }
-                    return new BundleCoordinates(row.get(2), row.get(3));
+                    return ArtifactCoordinatesUtils.mkBundleCoordinates(row.get(2), row.get(3));
                 });
                 put("javascript", row -> {
                     if (row.size() < 5) {
                         throw new RuntimeException("JavaScript coordinates need to specify artifactId, name and version in that order");
                     }
-                    return new JavaScriptCoordinates(row.get(2), row.get(3), row.get(4));
+                    return ArtifactCoordinatesUtils.mkJavaScriptCoordinates(row.get(2), row.get(3), row.get(4));
                 });
             }};
 

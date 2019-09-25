@@ -14,7 +14,6 @@ import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
-import org.eclipse.sw360.antenna.model.util.ArtifactUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.eclipse.sw360.antenna.policy.engine.ThirdPartyArtifact;
@@ -49,13 +48,15 @@ class AntennaArtifact implements ThirdPartyArtifact {
                 .getLicenses()
                 .stream()
                 .map(License::getName)
-                .filter(license -> searchedLicenses.contains(license))
+                .filter(searchedLicenses::contains)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<PackageURL> getPurl() {
-        return ArtifactUtils.getMostDominantArtifactCoordinates(ArtifactUtils.DEFAULT_PREFERED_COORDINATE_TYPES, artifact)
-                .map(ArtifactCoordinates::getPurl);
+        return artifact.askFor(ArtifactCoordinates.class)
+                .map(ArtifactCoordinates::getPurls)
+                .flatMap(packageURLS -> packageURLS.stream()
+                        .findFirst());
     }
 }

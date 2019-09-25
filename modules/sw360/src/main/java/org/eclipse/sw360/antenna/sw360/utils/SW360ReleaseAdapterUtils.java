@@ -14,7 +14,6 @@ import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
-import org.eclipse.sw360.antenna.sw360.rest.resource.SW360CoordinateKeysToArtifactCoordinates;
 import org.eclipse.sw360.antenna.sw360.rest.resource.SW360HalResourceUtility;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360Component;
 import org.eclipse.sw360.antenna.sw360.rest.resource.releases.SW360Release;
@@ -78,11 +77,10 @@ public class SW360ReleaseAdapterUtils {
 
     private static Map<String, String> getMapOfCoordinates(Artifact artifact) {
         Map<String, String> coordinates = new HashMap<>();
-        artifact.askForAll(ArtifactCoordinates.class).forEach(coordinate ->
-                coordinates.put(
-                        SW360CoordinateKeysToArtifactCoordinates.get(coordinate.getClass()),
-                        coordinate.toString())
-        );
+        artifact.askFor(ArtifactCoordinates.class)
+                .map(ArtifactCoordinates::getPurls)
+                .ifPresent(packageURLS -> packageURLS.forEach(packageURL ->
+                        coordinates.put(packageURL.getType(), packageURL.canonicalize())));
         return coordinates;
     }
 

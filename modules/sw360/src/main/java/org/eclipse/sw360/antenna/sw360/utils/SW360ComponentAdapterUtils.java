@@ -10,47 +10,33 @@
  */
 package org.eclipse.sw360.antenna.sw360.utils;
 
+import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactSourceUrl;
-import org.eclipse.sw360.antenna.model.artifact.facts.dotnet.DotNetCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.javaScript.JavaScriptCoordinates;
-import org.eclipse.sw360.antenna.model.util.ArtifactUtils;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360Component;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360ComponentType;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SW360ComponentAdapterUtils {
-    private static final List<Class<? extends ArtifactCoordinates>> preferredCoordinatesTypes = Stream.of(MavenCoordinates.class,
-            BundleCoordinates.class,
-            JavaScriptCoordinates.class,
-            DotNetCoordinates.class).collect(Collectors.toList());
-
-    private static Optional<ArtifactCoordinates> getMostDominantArtifactCoordinates(Artifact artifact) {
-        return ArtifactUtils.getMostDominantArtifactCoordinates(
-                preferredCoordinatesTypes,
-                artifact);
-    }
-
     public static String createComponentName(Artifact artifact) {
-        return getMostDominantArtifactCoordinates(artifact)
-                .map(ArtifactCoordinates::getName)
-                .filter(n -> ! n.isEmpty())
+        return artifact.askFor(ArtifactCoordinates.class)
+                .map(ArtifactCoordinates::getPurls)
+                .flatMap(purls -> purls.stream()
+                        .findFirst()) // TODO: ugly hack
+                .map(PackageURL::getName)
                 .orElse(artifact.toString()); // TODO: ugly hack
     }
 
     public static String createComponentVersion(Artifact artifact) {
-        return getMostDominantArtifactCoordinates(artifact)
-                .map(ArtifactCoordinates::getVersion)
+        return artifact.askFor(ArtifactCoordinates.class)
+                .map(ArtifactCoordinates::getPurls)
+                .flatMap(purls -> purls.stream()
+                        .findFirst()) // TODO: ugly hack
+                .map(PackageURL::getVersion)
                 .orElse("-");
     }
 
