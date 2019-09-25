@@ -1,4 +1,4 @@
-package org.eclipse.sw360.antenna.model.purl;
+package org.eclipse.sw360.antenna.model.coordinates;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
@@ -16,34 +16,34 @@ import java.util.stream.Stream;
  * A thin wrapper around com.github.packageurl.PackageURL
  * It just delegates
  */
-public final class PURL {
+public final class Coordinate {
     private final PackageURL packageURL;
 
-    public PURL(PackageURL packageURL) {
+    public Coordinate(PackageURL packageURL) {
         this.packageURL = packageURL;
     }
 
-    public PURL(String purl) {
+    public Coordinate(String purl) {
         try {
             packageURL = new PackageURL(purl);
         } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to create PURL", e);
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
         }
     }
 
-    public PURL(String type, String name) {
+    public Coordinate(String type, String name) {
         try {
             packageURL = new PackageURL(type, name);
         } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to create PURL", e);
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
         }
     }
 
-    public PURL(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
+    public Coordinate(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
         try {
             packageURL = new PackageURL(type, namespace, name, version, qualifiers, subpath);
         } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to create PURL", e);
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
         }
     }
 
@@ -51,7 +51,7 @@ public final class PURL {
         return packageURL.getScheme();
     }
 
-    public String getType() {
+    public final String getType() {
         return packageURL.getType();
     }
 
@@ -87,8 +87,8 @@ public final class PURL {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PURL purl = (PURL) o;
-        return Objects.equals(packageURL, purl.packageURL);
+        Coordinate coordinate = (Coordinate) o;
+        return Objects.equals(packageURL, coordinate.packageURL);
     }
 
     @Override
@@ -152,11 +152,11 @@ public final class PURL {
             return this;
         }
 
-        public PURL build() {
+        public Coordinate build() {
             try {
-                return new PURL(packageURLBuilder.build());
+                return new Coordinate(packageURLBuilder.build());
             } catch (MalformedPackageURLException e) {
-                throw new AntennaExecutionException("Failed to build PackageURL", e);
+                throw new AntennaExecutionException("Failed to build PackageURL in Builder for Coordinate", e);
             }
         }
     }

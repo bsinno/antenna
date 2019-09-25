@@ -10,8 +10,6 @@
  */
 package org.eclipse.sw360.antenna.model.artifact;
 
-import com.github.packageurl.MalformedPackageURLException;
-import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
