@@ -14,9 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.model.Configuration;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
 import org.eclipse.sw360.antenna.model.xml.generated.AntennaConfig;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.workflow.processors.filter.ConfigurationHandlerOverride;
@@ -107,14 +106,8 @@ public class ConfigurationResolverTest extends AntennaTestWithMockedContext {
 
         resolver.process(artifacts);
 
-        final MavenCoordinates mavenCoordinates = artifact.askFor(MavenCoordinates.class).get();
-        assertThat(mavenCoordinates.getArtifactId()).isEqualTo("testID");
-        assertThat(mavenCoordinates.getGroupId()).isEqualTo("testGroupId");
-        assertThat(mavenCoordinates.getVersion()).isEqualTo("testVersion");
-
-        final BundleCoordinates bundleCoordinates = artifact.askFor(BundleCoordinates.class).get();
-        assertThat(bundleCoordinates.getSymbolicName()).isEqualTo("testName");
-        assertThat(bundleCoordinates.getBundleVersion()).isEqualTo("testVersion");
+        assertThat(artifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:maven/testGroupId/testID@testVersion")).isTrue();
+        assertThat(artifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:p2/testName@testVersion")).isTrue();
     }
 
     @Test

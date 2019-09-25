@@ -15,9 +15,9 @@ import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorAndSet;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.model.reporting.ProcessingMessage;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.report.Reporter;
 import org.junit.After;
@@ -51,11 +51,11 @@ public class ConfigurationCheckerTest {
         artifact = new Artifact();
 
         artifact.addFact(new ArtifactFilename("artifact"));
-        artifact.addFact(new MavenCoordinates("artifact", null, null));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("artifact", null, null));
 
         selector = new ArtifactSelectorAndSet(
                 new ArtifactFilename("artifact"),
-                new MavenCoordinates("artifact", null, null)
+                ArtifactCoordinatesUtils.mkMavenCoordinates("artifact", null, null)
         );
 
         config = new Configuration(null);

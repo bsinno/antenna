@@ -51,8 +51,12 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
         this.purls.addAll(purlsToAdd);
     }
 
-    public boolean containsPurl(String purlString) throws MalformedPackageURLException {
-        return containsPurl(new PackageURL(purlString));
+    public boolean containsPurl(String purlString)  {
+        try {
+            return containsPurl(new PackageURL(purlString));
+        } catch (MalformedPackageURLException e) {
+            return false;
+        }
     }
 
     public boolean containsPurl(PackageURL purl) {

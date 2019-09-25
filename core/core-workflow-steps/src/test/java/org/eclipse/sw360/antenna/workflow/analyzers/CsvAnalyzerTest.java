@@ -11,13 +11,13 @@
 
 package org.eclipse.sw360.antenna.workflow.analyzers;
 
+import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.api.IProject;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
 import org.eclipse.sw360.antenna.model.util.ClassCodeSourceLocation;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
@@ -31,10 +31,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +69,13 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
         assertThat(artifacts).hasSize(2);
 
         Artifact foundArtifact = artifacts.stream()
-                .filter(artifact -> artifact.askFor(MavenCoordinates.class).get().getArtifactId().equals("commons-csv"))
+                .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
+                        .map(ArtifactCoordinates::getPurls)
+                        .flatMap(packageURLS -> packageURLS.stream()
+                                .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
+                                .findFirst())
+                        .filter(packageURL -> "commons-csv".equals(packageURL.getName()))
+                        .isPresent())
                 .findFirst().get();
 
         commonsCsvFullDependencyCheck(foundArtifact);
@@ -111,7 +114,13 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
         assertThat(artifacts).hasSize(2);
 
         Artifact foundArtifact = artifacts.stream()
-                .filter(artifact -> artifact.askFor(MavenCoordinates.class).get().getArtifactId().equals("commons-csv"))
+                .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
+                        .map(ArtifactCoordinates::getPurls)
+                        .flatMap(packageURLS -> packageURLS.stream()
+                                .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
+                                .findFirst())
+                        .filter(packageURL -> "commons-csv".equals(packageURL.getName()))
+                        .isPresent())
                 .findFirst().get();
 
         commonsCsvFullDependencyCheck(foundArtifact);
@@ -128,7 +137,13 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
         assertThat(hashes).hasSize(2);
 
         Artifact cliArtifact = artifacts.stream()
-                .filter(artifact -> artifact.askFor(MavenCoordinates.class).get().getArtifactId().equals("commons-cli"))
+                .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
+                        .map(ArtifactCoordinates::getPurls)
+                        .flatMap(packageURLS -> packageURLS.stream()
+                                .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
+                                .findFirst())
+                        .filter(packageURL -> "commons-cli".equals(packageURL.getName()))
+                        .isPresent())
                 .findFirst().get();
 
         assertThat(cliArtifact.askFor(CopyrightStatement.class).get()).isEqualTo(
@@ -168,8 +183,7 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
 
     private void commonsCsvFullDependencyCheck(Artifact foundArtifact) {
         assertThat(foundArtifact.getMatchState()).isEqualTo(MatchState.EXACT);
-        assertThat(foundArtifact.askFor(MavenCoordinates.class).get())
-                .isEqualTo(new MavenCoordinates("commons-csv", "org.apache.commons", "1.4"));
+        assertThat(foundArtifact.askFor(ArtifactCoordinates.class).get().containsPurl("pkg:maven/org.apache.commons/commons-csv@1.4")).isTrue();
 
         assertThat(foundArtifact.askFor(OverriddenLicenseInformation.class).get())
                 .isEqualTo(new OverriddenLicenseInformation(license1));
