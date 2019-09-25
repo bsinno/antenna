@@ -12,39 +12,35 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorHelper.compareStringsAsWildcard;
+
 /*
  * A thin wrapper around com.github.packageurl.PackageURL
  * It just delegates
  */
-public final class Coordinate {
+public class Coordinate {
     private final PackageURL packageURL;
 
-    public Coordinate(PackageURL packageURL) {
+    /*
+     * Package protected constructor to enforce the usage of the builder but to also allow extension in this package
+     */
+    Coordinate(PackageURL packageURL) {
         this.packageURL = packageURL;
     }
 
-    public Coordinate(String purl) {
-        try {
-            packageURL = new PackageURL(purl);
-        } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
-        }
-    }
-
-    public Coordinate(String type, String name) {
-        try {
-            packageURL = new PackageURL(type, name);
-        } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
-        }
-    }
-
-    public Coordinate(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
+    /*
+     * Package protected constructor to enforce the usage of the builder but to also allow extension in this package
+     */
+    Coordinate(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
         try {
             packageURL = new PackageURL(type, namespace, name, version, qualifiers, subpath);
         } catch (MalformedPackageURLException e) {
             throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
         }
+    }
+
+    public PackageURL getPackageURL() {
+        return packageURL;
     }
 
     public String getScheme() {
@@ -83,6 +79,19 @@ public final class Coordinate {
         return packageURL.canonicalize();
     }
 
+    public boolean matches(String packageUrlString) {
+        return matches(Coordinate.of(packageUrlString));
+    }
+
+    public boolean matches(Coordinate coordinate) {
+        return compareStringsAsWildcard(getScheme(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getType(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getNamespace(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getName(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getVersion(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getSubpath(), coordinate.getSubpath());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,7 +105,7 @@ public final class Coordinate {
         return Objects.hash(packageURL);
     }
 
-    public static class StandardTypes extends PackageURL.StandardTypes {
+    public static class Types extends PackageURL.StandardTypes {
         public static final String BUNDLE = "p2";
 
         public static final Set<String> all = Stream.of(
@@ -109,26 +118,58 @@ public final class Coordinate {
         return new Builder();
     }
 
+    public static Builder builder(String packageURLString) {
+        return new Builder(packageURLString);
+    }
+
+    public static Coordinate of(String packageURLString) {
+        return new Builder(packageURLString).build();
+    }
+
+    public static Coordinate of(PackageURL packageURL) {
+        return new Builder(packageURL).build();
+    }
+
+    /*
+     * A thin wrapper around com.github.packageurl.PackageURLBuilder
+     * It just delegates
+     */
     public static class Builder {
         private final PackageURLBuilder packageURLBuilder = PackageURLBuilder.aPackageURL();
+
+        public Builder() {
+        }
+
+        public Builder(String packageURLString) {
+            try {
+                final PackageURL packageURL = new PackageURL(packageURLString);
+                initializeFromPURL(packageURL);
+            } catch (MalformedPackageURLException e) {
+                throw new AntennaExecutionException("Failed to build PackageURL in Builder for Coordinate", e);
+            }
+        }
+
+        public Builder(PackageURL packageURL) {
+                initializeFromPURL(packageURL);
+        }
+
+        private void initializeFromPURL(PackageURL packageURL) {
+            withType(packageURL.getType());
+            withNamespace(packageURL.getNamespace());
+            withName(packageURL.getName());
+            withVersion(packageURL.getVersion());
+            withSubpath(packageURL.getSubpath());
+            packageURL.getQualifiers()
+                    .forEach(this::withQualifier);
+        }
 
         public Builder withType(String type) {
             packageURLBuilder.withType(type);
             return this;
         }
 
-        public Builder withGroupId(String namespace) {
-            packageURLBuilder.withNamespace(namespace);
-            return this;
-        }
-
         public Builder withNamespace(String namespace) {
             packageURLBuilder.withNamespace(namespace);
-            return this;
-        }
-
-        public Builder withArtifactId(String name) {
-            packageURLBuilder.withName(name);
             return this;
         }
 
@@ -154,6 +195,19 @@ public final class Coordinate {
 
         public Coordinate build() {
             try {
+                final PackageURL packageURL = packageURLBuilder.build();
+                if (MavenCoordinate.TYPE.equals(packageURL.getType())){
+                    return new MavenCoordinate(packageURL);
+                }
+                if (BundleCoordinate.TYPE.equals(packageURL.getType())){
+                    return new BundleCoordinate(packageURL);
+                }
+                if (JavaScriptCoordinate.TYPE.equals(packageURL.getType())){
+                    return new JavaScriptCoordinate(packageURL);
+                }
+                if (DotNetCoordinate.TYPE.equals(packageURL.getType())){
+                    return new DotNetCoordinate(packageURL);
+                }
                 return new Coordinate(packageURLBuilder.build());
             } catch (MalformedPackageURLException e) {
                 throw new AntennaExecutionException("Failed to build PackageURL in Builder for Coordinate", e);

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates> {
-    private Map<String, Coordinate> coordinates = new HashMap<>();
+    private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     private void putPurl(Coordinate packageURL) {
         coordinates.put(packageURL.getType(), packageURL);
@@ -32,7 +32,7 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
         final Coordinate coordinate = Coordinate.builder()
                 .withName(name)
                 .withVersion(version)
-                .withType(Coordinate.StandardTypes.GENERIC)
+                .withType(Coordinate.Types.GENERIC)
                 .build();
         coordinates.put(coordinate.getType(), coordinate);
     }
@@ -43,7 +43,7 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
 
     public ArtifactCoordinates(String... coordinateStringsToAdd) {
         for (String coordinateStringToAdd: coordinateStringsToAdd) {
-            putPurl(new Coordinate(coordinateStringToAdd));
+            putPurl(Coordinate.builder(coordinateStringToAdd).build());
         }
     }
 
@@ -53,12 +53,12 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
 
     public ArtifactCoordinates(Set<String> coordinateStringsToAdd) {
         for (String coordinateStringToAdd: coordinateStringsToAdd) {
-            putPurl(new Coordinate(coordinateStringToAdd));
+            putPurl(Coordinate.of(coordinateStringToAdd));
         }
     }
 
     public boolean containsPurl(String coordinateString)  {
-        return containsPurl(new Coordinate(coordinateString));
+        return containsPurl(Coordinate.of(coordinateString));
     }
 
     public boolean containsPurl(Coordinate coordinate) {
@@ -95,7 +95,7 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
                     .anyMatch(e -> {
                         final Coordinate thisCoordinate = e.getValue();
                         final Coordinate otherCoordinate = artifactCoordinates.coordinates.get(e.getKey());
-                        return thisCoordinate.equals(otherCoordinate); // TODO: regex on coordinates
+                        return thisCoordinate.matches(otherCoordinate);
                     });
         }
         return false;
