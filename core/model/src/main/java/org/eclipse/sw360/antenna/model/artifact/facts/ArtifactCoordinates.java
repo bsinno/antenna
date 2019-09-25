@@ -11,77 +11,65 @@
 
 package org.eclipse.sw360.antenna.model.artifact.facts;
 
-import com.github.packageurl.MalformedPackageURLException;
-import com.github.packageurl.PackageURL;
-import com.github.packageurl.PackageURLBuilder;
-import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
+import org.eclipse.sw360.antenna.model.purl.PURL;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates> {
-    private Map<String,PackageURL> purls = new HashMap<>();
+public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates> {
+    private Map<String,PURL> purls = new HashMap<>();
 
-    private void putPurl(PackageURL packageURL) {
+    private void putPurl(PURL packageURL) {
         purls.put(packageURL.getType(), packageURL);
     }
 
-    private void putPurls(Collection<PackageURL> packageURLS) {
+    private void putPurls(Collection<PURL> packageURLS) {
         packageURLS.forEach(this::putPurl);
     }
 
     public ArtifactCoordinates(String name, String version) {
-        final PackageURL purl;
-        try {
-            purl = PackageURLBuilder.aPackageURL()
-                    .withName(name)
-                    .withVersion(version)
-                    .withType(PackageURL.StandardTypes.GENERIC)
-                    .build();
-        } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to build package url.", e);
-        }
+        final PURL purl = PURL.builder()
+                .withName(name)
+                .withVersion(version)
+                .withType(PURL.StandardTypes.GENERIC)
+                .build();
         purls.put(purl.getType(), purl);
     }
 
-    public ArtifactCoordinates(PackageURL... purlsToAdd) {
+    public ArtifactCoordinates(PURL... purlsToAdd) {
         putPurls(Arrays.asList(purlsToAdd));
     }
 
-    public ArtifactCoordinates(String... purlStringsToAdd) throws MalformedPackageURLException {
+    public ArtifactCoordinates(String... purlStringsToAdd) {
         for (String purlStringToAdd: purlStringsToAdd) {
-            putPurl(new PackageURL(purlStringToAdd));
+            putPurl(new PURL(purlStringToAdd));
         }
     }
 
-    public ArtifactCoordinates(Collection<PackageURL> purlsToAdd) {
+    public ArtifactCoordinates(Collection<PURL> purlsToAdd) {
         putPurls(purlsToAdd);
     }
 
-    public ArtifactCoordinates(Set<String> purlStringsToAdd) throws MalformedPackageURLException {
+    public ArtifactCoordinates(Set<String> purlStringsToAdd) {
         for (String purlStringToAdd: purlStringsToAdd) {
-            putPurl(new PackageURL(purlStringToAdd));
+            putPurl(new PURL(purlStringToAdd));
         }
     }
 
     public boolean containsPurl(String purlString)  {
-        try {
-            return containsPurl(new PackageURL(purlString));
-        } catch (MalformedPackageURLException e) {
-            return false;
-        }
+        return containsPurl(new PURL(purlString));
     }
 
-    public boolean containsPurl(PackageURL purl) {
+    public boolean containsPurl(PURL purl) {
         return purls.values().contains(purl);
     }
 
-    public Set<PackageURL> getPurls() {
+    public Set<PURL> getPurls() {
         return new HashSet<>(purls.values());
     }
 
-    public Optional<PackageURL> getPurlForType(String type) {
+    public Optional<PURL> getPurlForType(String type) {
         return Optional.ofNullable(purls.get(type));
     }
 
@@ -93,7 +81,7 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
     @Override
     public String toString() {
         return purls.values().stream()
-                .map(PackageURL::canonicalize)
+                .map(PURL::canonicalize)
                 .collect(Collectors.joining(",","{","}"));
     }
 
@@ -105,8 +93,8 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
                     .stream()
                     .filter(e -> Objects.nonNull(e.getValue()))
                     .anyMatch(e -> {
-                        final PackageURL thisPurl = e.getValue();
-                        final PackageURL otherPurl = artifactCoordinates.purls.get(e.getKey());
+                        final PURL thisPurl = e.getValue();
+                        final PURL otherPurl = artifactCoordinates.purls.get(e.getKey());
                         return thisPurl.equals(otherPurl); // TODO: regex on purls
                     });
         }
@@ -128,14 +116,5 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
         return new ArtifactCoordinates(
                 Stream.concat(purls.values().stream(), resultWithPrecedence.purls.values().stream())
                         .collect(Collectors.toList()));
-    }
-
-    public static class StandardTypes extends PackageURL.StandardTypes {
-        public static final String BUNDLE = "p2";
-
-        public static final Set<String> all = Stream.of(
-                BITBUCKET, COMPOSER, DEBIAN, DOCKER, GEM, GENERIC, GITHUB, GOLANG, MAVEN, NPM, NUGET, PYPI, RPM,
-                BUNDLE)
-                .collect(Collectors.toSet());
     }
 }
