@@ -17,10 +17,11 @@ import org.eclipse.sw360.antenna.api.configuration.AntennaContext;
 import org.eclipse.sw360.antenna.api.workflow.WorkflowStepResult;
 import org.eclipse.sw360.antenna.frontend.stub.mojo.WrappedDependencyNodes;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.junit.Rule;
 import org.junit.Test;
@@ -108,11 +109,7 @@ public class MvnDependencyTreeAnalyzerTest {
     private Artifact getExpectedArtifact(int i) {
         Artifact artifact = new Artifact(new MvnDependencyTreeAnalyzer().getName());
 
-        MavenCoordinates.MavenCoordinatesBuilder coordinatesBuilder = new MavenCoordinates.MavenCoordinatesBuilder();
-        coordinatesBuilder.setGroupId("org.eclipse.sw360.antenna");
-        coordinatesBuilder.setArtifactId("artifact-" + i);
-        coordinatesBuilder.setVersion("1.0." + i);
-        final MavenCoordinates coordinates = coordinatesBuilder.build();
+        final ArtifactCoordinates coordinates = ArtifactCoordinatesUtils.mkMavenCoordinates("artifact-" + i, "org.eclipse.sw360.antenna", "1.0." + i);
         artifact.addFact(coordinates);
 
         String path = getFilePathForI(i).toString();

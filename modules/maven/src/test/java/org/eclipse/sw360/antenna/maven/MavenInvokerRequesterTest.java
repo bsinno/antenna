@@ -10,12 +10,15 @@
  */
 package org.eclipse.sw360.antenna.maven;
 
+import com.github.packageurl.PackageURL;
+import com.github.packageurl.PackageURLBuilder;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,11 +49,16 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
 
     private MavenInvokerRequester mir;
 
-    private MavenCoordinates mavenCoordinates;
+    private PackageURL mavenPurl;
 
     @Before
-    public void before() throws IOException, AntennaException {
-        mavenCoordinates = new MavenCoordinates("artifactId","groupId","version");
+    public void before() throws Exception {
+        mavenPurl = PackageURLBuilder.aPackageURL()
+                .withType(PackageURL.StandardTypes.MAVEN)
+                .withNamespace("groupId")
+                .withName("artifactId")
+                .withVersion("version")
+                .build();
 
         System.setProperty("maven.home", temporaryFolder.newFolder("m2").toString());
 
@@ -83,7 +91,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
     public void requestFileTestThatRequestIsComposedCorrectly() throws Exception {
         Path targetDirectory = temporaryFolder.newFolder("target").toPath();
 
-        final String expectedJarBaseName = mir.getExpectedJarBaseName(mavenCoordinates, ClassifierInformation.DEFAULT_JAR);
+        final String expectedJarBaseName = mir.getExpectedJarBaseName(mavenPurl, ClassifierInformation.DEFAULT_JAR);
         File expectedJarFile = new File(targetDirectory.toFile(), expectedJarBaseName);
 
         Mockito.when(defaultInvokerMock.execute(ArgumentMatchers.any(InvocationRequest.class)))
@@ -95,7 +103,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
                     return getDummyInvocationResult(0);
                 });
 
-        Optional<File> resultFile = mir.requestFile(mavenCoordinates, targetDirectory, ClassifierInformation.DEFAULT_JAR);
+        Optional<File> resultFile = mir.requestFile(mavenPurl, targetDirectory, ClassifierInformation.DEFAULT_JAR);
 
         Mockito.verify(defaultInvokerMock).execute(captor.capture());
 
@@ -104,9 +112,9 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
         Collection<String> goals = invocationRequest.getGoals();
 
         assertThat(goals).isNotEmpty();
-        assertThat(goals).filteredOn(s -> s.contains(mavenCoordinates.getGroupId())).hasSize(1);
-        assertThat(goals).filteredOn(s -> s.contains(mavenCoordinates.getArtifactId())).hasSize(1);
-        assertThat(goals).filteredOn(s -> s.contains(mavenCoordinates.getVersion())).hasSize(1);
+        assertThat(goals).filteredOn(s -> s.contains(mavenPurl.getNamespace())).hasSize(1);
+        assertThat(goals).filteredOn(s -> s.contains(mavenPurl.getName())).hasSize(1);
+        assertThat(goals).filteredOn(s -> s.contains(mavenPurl.getVersion())).hasSize(1);
         assertThat(goals).filteredOn(s -> s.contains(targetDirectory.toString())).hasSize(1);
     }
 
@@ -115,7 +123,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
         Path targetDirectory = temporaryFolder.newFolder("target").toPath();
         Mockito.when(defaultInvokerMock.execute(ArgumentMatchers.any(InvocationRequest.class)))
                 .thenReturn(getDummyInvocationResult(0));
-        Optional<File> requestResult = mir.requestFile(mavenCoordinates, targetDirectory, ClassifierInformation.DEFAULT_JAR);
+        Optional<File> requestResult = mir.requestFile(mavenPurl, targetDirectory, ClassifierInformation.DEFAULT_JAR);
         assertThat(requestResult).isEmpty();
     }
 
@@ -123,7 +131,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
     public void requestFileOnNonzeroReturnCodeReturnsEmptyOptional() throws Exception {
         Path targetDirectory = temporaryFolder.newFolder("target").toPath();
 
-        final String expectedJarBaseName = mir.getExpectedJarBaseName(mavenCoordinates, ClassifierInformation.DEFAULT_JAR);
+        final String expectedJarBaseName = mir.getExpectedJarBaseName(mavenPurl, ClassifierInformation.DEFAULT_JAR);
         File expectedJarFile = new File(targetDirectory.toFile(), expectedJarBaseName);
 
         Mockito.when(defaultInvokerMock.execute(ArgumentMatchers.any(InvocationRequest.class)))
@@ -134,7 +142,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
                     // return dummy result
                     return getDummyInvocationResult(1);
                 });
-        Optional<File> requestResult = mir.requestFile(mavenCoordinates, targetDirectory, ClassifierInformation.DEFAULT_JAR);
+        Optional<File> requestResult = mir.requestFile(mavenPurl, targetDirectory, ClassifierInformation.DEFAULT_JAR);
         assertThat(requestResult).isEmpty();
     }
 }

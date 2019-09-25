@@ -10,7 +10,7 @@
  */
 package org.eclipse.sw360.antenna.maven;
 
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import com.github.packageurl.PackageURL;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -27,15 +27,15 @@ public abstract class IArtifactRequester {
     /**
      * Requests a jar file from a repository.
      *
-     * @param coordinates           Identifies the artifact for which the jar is requested.
+     * @param mavenPurl             Identifies the artifact for which the jar is requested.
      * @param targetDirectory       Where the jar file will be stored.
      * @param classifierInformation Information on the classifier (source or not and name).
      * @return The jar file, or null if the file couldn't be obtained.
      */
-    public abstract Optional<File> requestFile(MavenCoordinates coordinates, Path targetDirectory, ClassifierInformation classifierInformation);
+    public abstract Optional<File> requestFile(PackageURL mavenPurl, Path targetDirectory, ClassifierInformation classifierInformation);
 
-    String getExpectedJarBaseName(MavenCoordinates coordinates, ClassifierInformation classifierInformation) {
-        return coordinates.getArtifactId() + "-" + coordinates.getVersion()
+    String getExpectedJarBaseName(PackageURL mavenPurl, ClassifierInformation classifierInformation) {
+        return mavenPurl.getName() + "-" + mavenPurl.getVersion()
                 + (classifierInformation.classifier.isEmpty() ? JAR_EXTENSION : "-" + classifierInformation.classifier + JAR_EXTENSION);
     }
 

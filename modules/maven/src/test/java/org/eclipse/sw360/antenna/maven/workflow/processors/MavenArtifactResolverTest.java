@@ -14,13 +14,12 @@ import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 import org.eclipse.sw360.antenna.api.IProject;
-import org.eclipse.sw360.antenna.api.configuration.ContextExtension;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.maven.workflow.processors.enricher.MavenArtifactResolver;
 import org.eclipse.sw360.antenna.maven.workflow.processors.enricher.MavenArtifactResolverImpl;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.util.ProxySettings;
@@ -99,7 +98,7 @@ public class MavenArtifactResolverTest extends AntennaTestWithMockedContext {
     private Artifact mkArtifact(String groupId, String name, String version) {
         Artifact artifact = new Artifact();
 
-        artifact.addFact(new MavenCoordinates(groupId, name, version));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(groupId, name, version));
         artifact.addFact(new ArtifactMatchingMetadata(MatchState.EXACT));
 
         return artifact;
