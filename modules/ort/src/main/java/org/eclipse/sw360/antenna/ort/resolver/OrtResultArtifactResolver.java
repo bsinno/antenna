@@ -16,9 +16,7 @@ import com.here.ort.model.config.PathExclude;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.artifact.facts.dotnet.DotNetCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.javaScript.JavaScriptCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.eclipse.sw360.antenna.util.LicenseSupport;
 
@@ -71,30 +69,19 @@ public class OrtResultArtifactResolver implements Function<Package, Artifact> {
     }
 
     private static ArtifactCoordinates mapDotNetCoordinates(String name, String version) {
-        return new DotNetCoordinates.DotNetCoordinatesBuilder()
-                .setPackageId(name)
-                .setVersion(version)
-                .build();
+        return ArtifactCoordinatesUtils.mkDotNetCoordinates(name, version);
     }
 
     private static ArtifactCoordinates mapMavenCoordinates(String namespace, String name, String version) {
-        return new MavenCoordinates.MavenCoordinatesBuilder()
-                .setGroupId(namespace)
-                .setVersion(version)
-                .setArtifactId(name)
-                .build();
+        return ArtifactCoordinatesUtils.mkMavenCoordinates(name, name, version);
     }
 
     private static ArtifactCoordinates mapJavaScriptCoordinates(String name, String version) {
-        return new JavaScriptCoordinates.JavaScriptCoordinatesBuilder()
-                .setName(name)
-                .setVersion(version)
-                .setArtifactId(name + "-" + version)
-                .build();
+        return ArtifactCoordinatesUtils.mkJavaScriptCoordinates(name, name + "-" + version, version); // TODO: this is broken
     }
 
     private static ArtifactCoordinates mapSimpleCoordinates(String name, String version) {
-        return new GenericArtifactCoordinates(name, version);
+        return new ArtifactCoordinates(name, version);
     }
 
     private static Optional<ArtifactSourceUrl> mapSourceUrl(Package pkg) {

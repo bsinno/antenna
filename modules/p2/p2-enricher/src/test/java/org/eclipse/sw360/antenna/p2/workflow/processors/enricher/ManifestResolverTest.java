@@ -10,13 +10,14 @@
  */
 package org.eclipse.sw360.antenna.p2.workflow.processors.enricher;
 
+import com.github.packageurl.PackageURL;
 import org.assertj.core.api.Assertions;
 import org.eclipse.sw360.antenna.api.IProject;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.testing.util.JarCreator;
 import org.junit.After;
@@ -66,11 +67,15 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
     }
 
     private void assertManifestMetadata(Artifact artifact) {
-        final Optional<BundleCoordinates> bundleCoordinates = artifact.askFor(BundleCoordinates.class);
+        final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
+        final Optional<PackageURL> bundleCoordinates = artifactCoordinates.map(ArtifactCoordinates::getPurls)
+                .flatMap(packageURLS -> packageURLS.stream()
+                            .filter(packageURL -> ArtifactCoordinates.StandardTypes.BUNDLE.equals(packageURL.getType()))
+                            .findFirst());
         Assertions.assertThat(bundleCoordinates.isPresent()).isTrue();
-        Assertions.assertThat(bundleCoordinates.get().getSymbolicName())
+        Assertions.assertThat(bundleCoordinates.get().getName())
                 .isEqualTo(JarCreator.testManifestSymbolicName);
-        Assertions.assertThat(bundleCoordinates.get().getBundleVersion())
+        Assertions.assertThat(bundleCoordinates.get().getVersion())
                 .isEqualTo(JarCreator.testManifestVersion);
     }
 
@@ -91,8 +96,13 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
 
         resolver.process(artifacts);
 
-        final Optional<BundleCoordinates> bundleCoordinates = artifacts.get(0).askFor(BundleCoordinates.class);
-        Assertions.assertThat(bundleCoordinates.isPresent()).isFalse();
+        final Optional<ArtifactCoordinates> bundleCoordinates = artifacts.get(0).askFor(ArtifactCoordinates.class);
+        Assertions.assertThat(bundleCoordinates
+                .map(ArtifactCoordinates::getPurls)
+                .map(packageURLS -> packageURLS.stream()
+                        .map(PackageURL::getType)
+                        .anyMatch(ArtifactCoordinates.StandardTypes.BUNDLE::equals))
+                .orElse(false)).isFalse();
     }
 
     @Test

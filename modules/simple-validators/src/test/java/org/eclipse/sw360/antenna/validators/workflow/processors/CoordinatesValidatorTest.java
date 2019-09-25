@@ -11,10 +11,8 @@
 package org.eclipse.sw360.antenna.validators.workflow.processors;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.MavenCoordinates;
+import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
-import org.eclipse.sw360.antenna.validators.workflow.processors.CoordinatesValidator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,26 +54,26 @@ public class CoordinatesValidatorTest extends AntennaTestWithMockedContext {
 
     @Test
     public void validateCoordinatesTestEmptyMvn() {
-        artifact.addFact(new MavenCoordinates(null,null,null));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(null,null,null));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(1);
     }
 
     @Test
     public void validateCoordinatesTestMvn() {
-        artifact.addFact(new MavenCoordinates("test", "test", "test"));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("test", "test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2() {
-        artifact.addFact(new BundleCoordinates("test", "test"));
+        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates("test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2andMvn() {
-        artifact.addFact(new MavenCoordinates("test", "test", "test"));
-        artifact.addFact(new BundleCoordinates("test", "test"));
+        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("test", "test", "test"));
+        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates("test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
