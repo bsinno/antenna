@@ -21,7 +21,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates> {
-    private Set<PackageURL> purls = new HashSet<>();
+    private Map<String,PackageURL> purls = new HashMap<>();
+
+    private void putPurl(PackageURL packageURL) {
+        purls.put(packageURL.getType(), packageURL);
+    }
+
+    private void putPurls(Collection<PackageURL> packageURLS) {
+        packageURLS.forEach(this::putPurl);
+    }
 
     public ArtifactCoordinates(String name, String version) {
         final PackageURL purl;
@@ -34,26 +42,26 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
         } catch (MalformedPackageURLException e) {
             throw new AntennaExecutionException("Failed to build package url.", e);
         }
-        purls.add(purl);
+        purls.put(purl.getType(), purl);
     }
 
     public ArtifactCoordinates(PackageURL... purlsToAdd) {
-        purls.addAll(Arrays.asList(purlsToAdd));
+        putPurls(Arrays.asList(purlsToAdd));
     }
 
     public ArtifactCoordinates(String... purlStringsToAdd) throws MalformedPackageURLException {
         for (String purlStringToAdd: purlStringsToAdd) {
-            purls.add(new PackageURL(purlStringToAdd));
+            putPurl(new PackageURL(purlStringToAdd));
         }
     }
 
     public ArtifactCoordinates(Collection<PackageURL> purlsToAdd) {
-        this.purls.addAll(purlsToAdd);
+        putPurls(purlsToAdd);
     }
 
     public ArtifactCoordinates(Set<String> purlStringsToAdd) throws MalformedPackageURLException {
         for (String purlStringToAdd: purlStringsToAdd) {
-            purls.add(new PackageURL(purlStringToAdd));
+            putPurl(new PackageURL(purlStringToAdd));
         }
     }
 
@@ -66,11 +74,15 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
     }
 
     public boolean containsPurl(PackageURL purl) {
-        return purls.contains(purl);
+        return purls.values().contains(purl);
     }
 
     public Set<PackageURL> getPurls() {
-        return new HashSet<>(purls);
+        return new HashSet<>(purls.values());
+    }
+
+    public Optional<PackageURL> getPurlForType(String type) {
+        return Optional.ofNullable(purls.get(type));
     }
 
     @Override
@@ -80,7 +92,7 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
 
     @Override
     public String toString() {
-        return purls.stream()
+        return purls.values().stream()
                 .map(PackageURL::canonicalize)
                 .collect(Collectors.joining(",","{","}"));
     }
@@ -89,8 +101,14 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
     public boolean matches(ArtifactIdentifier artifactIdentifier) {
         if (artifactIdentifier instanceof ArtifactCoordinates) {
             ArtifactCoordinates artifactCoordinates = (ArtifactCoordinates) artifactIdentifier;
-            return purls.stream()
-                    .anyMatch(artifactCoordinates::containsPurl);
+            return purls.entrySet()
+                    .stream()
+                    .filter(e -> Objects.nonNull(e.getValue()))
+                    .anyMatch(e -> {
+                        final PackageURL thisPurl = e.getValue();
+                        final PackageURL otherPurl = artifactCoordinates.purls.get(e.getKey());
+                        return thisPurl.equals(otherPurl); // TODO: regex on purls
+                    });
         }
         return false;
     }
@@ -108,7 +126,7 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
     @Override
     public ArtifactCoordinates mergeWith(ArtifactCoordinates resultWithPrecedence) {
         return new ArtifactCoordinates(
-                Stream.concat(purls.stream(), resultWithPrecedence.purls.stream())
+                Stream.concat(purls.values().stream(), resultWithPrecedence.purls.values().stream())
                         .collect(Collectors.toList()));
     }
 
@@ -117,7 +135,7 @@ public class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinat
 
         public static final Set<String> all = Stream.of(
                 BITBUCKET, COMPOSER, DEBIAN, DOCKER, GEM, GENERIC, GITHUB, GOLANG, MAVEN, NPM, NUGET, PYPI, RPM,
-                BUNDLE
-                ).collect(Collectors.toSet());
+                BUNDLE)
+                .collect(Collectors.toSet());
     }
 }
