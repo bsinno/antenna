@@ -54,7 +54,7 @@ public class ReporterTest {
         reporter.writeReport(stream);
         String reportString = new String(stream.toByteArray());
         assertThat(reportString).contains(msg);
-        assertThat(reportString).contains(id.getPurls().stream().findFirst().get().getVersion());
+        assertThat(reportString).contains(id.getCoordinates().stream().findFirst().get().getVersion());
     }
 
     @Test

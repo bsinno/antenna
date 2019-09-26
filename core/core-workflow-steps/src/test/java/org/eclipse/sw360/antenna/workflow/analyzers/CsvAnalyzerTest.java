@@ -71,7 +71,7 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
 
         Artifact foundArtifact = artifacts.stream()
                 .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
-                        .map(ArtifactCoordinates::getPurls)
+                        .map(ArtifactCoordinates::getCoordinates)
                         .flatMap(packageURLS -> packageURLS.stream()
                                 .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
                                 .findFirst())
@@ -116,7 +116,7 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
 
         Artifact foundArtifact = artifacts.stream()
                 .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
-                        .map(ArtifactCoordinates::getPurls)
+                        .map(ArtifactCoordinates::getCoordinates)
                         .flatMap(packageURLS -> packageURLS.stream()
                                 .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
                                 .findFirst())
@@ -139,7 +139,7 @@ public class CsvAnalyzerTest extends AntennaTestWithMockedContext {
 
         Artifact cliArtifact = artifacts.stream()
                 .filter(artifact -> artifact.askFor(ArtifactCoordinates.class)
-                        .map(ArtifactCoordinates::getPurls)
+                        .map(ArtifactCoordinates::getCoordinates)
                         .flatMap(packageURLS -> packageURLS.stream()
                                 .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
                                 .findFirst())

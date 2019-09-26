@@ -55,7 +55,7 @@ class AntennaArtifact implements ThirdPartyArtifact {
     @Override
     public Optional<Coordinate> getCoordinate() {
         return artifact.askFor(ArtifactCoordinates.class)
-                .map(ArtifactCoordinates::getPurls)
+                .map(ArtifactCoordinates::getCoordinates)
                 .flatMap(packageURLS -> packageURLS.stream()
                         .findFirst());
     }

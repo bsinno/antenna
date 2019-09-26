@@ -68,11 +68,11 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
         return coordinates.values().contains(coordinate);
     }
 
-    public Set<Coordinate> getPurls() {
+    public Set<Coordinate> getCoordinates() {
         return new HashSet<>(coordinates.values());
     }
 
-    public Optional<Coordinate> getPurlForType(String type) {
+    public Optional<Coordinate> getCoordinateForType(String type) {
         return Optional.ofNullable(coordinates.get(type));
     }
 

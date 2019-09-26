@@ -169,7 +169,7 @@ public class SourceValidator extends AbstractComplianceChecker {
                 .filter(artifact ->  {
                     final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
                     return artifactCoordinates
-                            .flatMap(a -> a.getPurlForType(Coordinate.Types.MAVEN))
+                            .flatMap(a -> a.getCoordinateForType(Coordinate.Types.MAVEN))
                             .isPresent();
                 })
                 .forEach(artifact -> validateSources(artifact)

@@ -68,6 +68,17 @@ public class ArtifactCore
         return addFact(new ArtifactCoordinates(coordinate));
     }
 
+    public Set<Coordinate> getCoordinates() {
+        return askFor(ArtifactCoordinates.class)
+                .map(ArtifactCoordinates::getCoordinates)
+                .orElse(Collections.emptySet());
+    }
+
+    public Optional<Coordinate> getCoordinateForType(String type) {
+        return askFor(ArtifactCoordinates.class)
+                .flatMap(a -> a.getCoordinateForType(type));
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends ArtifactFact> Optional<T> askFor(Class<T> rowClass) {
         return filterEmptyFacts(Optional.ofNullable(artifactFacts.get(rowClass))

@@ -124,7 +124,7 @@ public class MavenArtifactResolverImpl {
             return;
         }
         final Optional<Coordinate> oMavenPurl = oCoordinates
-                .flatMap(coordinates -> coordinates.getPurlForType(Coordinate.Types.MAVEN));
+                .flatMap(coordinates -> coordinates.getCoordinateForType(Coordinate.Types.MAVEN));
         if (!oMavenPurl.isPresent()) {
             return;
         }

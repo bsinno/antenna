@@ -24,7 +24,7 @@ import java.util.Date;
 public class SW360ComponentAdapterUtils {
     public static String createComponentName(Artifact artifact) {
         return artifact.askFor(ArtifactCoordinates.class)
-                .map(ArtifactCoordinates::getPurls)
+                .map(ArtifactCoordinates::getCoordinates)
                 .flatMap(purls -> purls.stream()
                         .findFirst()) // TODO: ugly hack
                 .map(Coordinate::getName)
@@ -33,7 +33,7 @@ public class SW360ComponentAdapterUtils {
 
     public static String createComponentVersion(Artifact artifact) {
         return artifact.askFor(ArtifactCoordinates.class)
-                .map(ArtifactCoordinates::getPurls)
+                .map(ArtifactCoordinates::getCoordinates)
                 .flatMap(purls -> purls.stream()
                         .findFirst()) // TODO: ugly hack
                 .map(Coordinate::getVersion)

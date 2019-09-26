@@ -200,23 +200,30 @@ public class ArtifactSelectorTest {
 
     private Artifact createArtifact(String hash, String artifactId, String groupId, String version,
                                     String bundleVersion, String symbolicName) {
-        return new Artifact()
-                .addFact(new ArtifactFilename(defaultFileName, hash))
-                .addCoordinate(new MavenCoordinate(artifactId, groupId, version))
-                .addCoordinate(new BundleCoordinate(symbolicName, bundleVersion));
+        final Artifact artifact = new Artifact();
+        if (hash != null) {
+            artifact.addFact(new ArtifactFilename(defaultFileName, hash));
+        }
+        if (artifactId != null || groupId != null || version != null) {
+            artifact.addCoordinate(new MavenCoordinate(artifactId, groupId, version));
+        }
+        if (symbolicName != null || bundleVersion != null) {
+                artifact.addCoordinate(new BundleCoordinate(symbolicName, bundleVersion));
+        }
+        return artifact;
     }
 
     private ArtifactSelector createArtifactSelector(String filename, String hash, String artifactId, String groupId,
             String version, String bundleVersion, String symbolicName) {
 
         Set<ArtifactIdentifier> identifierSet = new HashSet<>();
-        if(filename != null || hash != null) {
+        if (filename != null || hash != null) {
             identifierSet.add(new ArtifactFilename(filename, hash));
         }
-        if(artifactId != null || groupId != null || version != null) {
+        if (artifactId != null || groupId != null || version != null) {
             identifierSet.add(new ArtifactCoordinates(new MavenCoordinate(artifactId, groupId, version)));
         }
-        if(symbolicName != null || bundleVersion != null) {
+        if (symbolicName != null || bundleVersion != null) {
             identifierSet.add(new ArtifactCoordinates(new BundleCoordinate(symbolicName, bundleVersion)));
         }
         return new ArtifactSelectorAndSet(identifierSet);

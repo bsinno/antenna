@@ -69,7 +69,7 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
     private void assertManifestMetadata(Artifact artifact) {
         final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
         final Optional<Coordinate> bundleCoordinates = artifactCoordinates
-                .flatMap(c -> c.getPurlForType(Coordinate.Types.P2));
+                .flatMap(c -> c.getCoordinateForType(Coordinate.Types.P2));
         Assertions.assertThat(bundleCoordinates.isPresent()).isTrue();
         Assertions.assertThat(bundleCoordinates.get().getName())
                 .isEqualTo(JarCreator.testManifestSymbolicName);
@@ -96,7 +96,7 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
 
         final Optional<ArtifactCoordinates> bundleCoordinates = artifacts.get(0).askFor(ArtifactCoordinates.class);
         Assertions.assertThat(bundleCoordinates
-                .flatMap(c -> c.getPurlForType(Coordinate.Types.P2))
+                .flatMap(c -> c.getCoordinateForType(Coordinate.Types.P2))
                 .isPresent()).isFalse();
     }
 

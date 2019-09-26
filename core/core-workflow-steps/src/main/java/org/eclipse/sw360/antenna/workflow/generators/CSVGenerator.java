@@ -75,7 +75,7 @@ public class CSVGenerator extends AbstractGenerator {
             if(oArtifactCoordinates.isPresent()) {
                 final ArtifactCoordinates artifactCoordinates = oArtifactCoordinates.get();
 
-                Optional<Coordinate> mavenPURL = artifactCoordinates.getPurlForType(Coordinate.Types.MAVEN);
+                Optional<Coordinate> mavenPURL = artifactCoordinates.getCoordinateForType(Coordinate.Types.MAVEN);
                 if(mavenPURL.isPresent()) {
                     appendInformation(information, mavenPURL.get().getName());
                     appendInformation(information, mavenPURL.get().getNamespace());
@@ -86,7 +86,7 @@ public class CSVGenerator extends AbstractGenerator {
                     appendInformation(information, "");
                 }
 
-                Optional<Coordinate> bundlePURL = artifactCoordinates.getPurlForType(Coordinate.Types.P2);
+                Optional<Coordinate> bundlePURL = artifactCoordinates.getCoordinateForType(Coordinate.Types.P2);
                 if(bundlePURL.isPresent()) {
                     // appendInformation(information, bundlePURL.get().getName());
                     appendInformation(information, bundlePURL.get().getVersion());

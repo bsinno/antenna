@@ -79,7 +79,7 @@ public class SW360ReleaseAdapterUtils {
     private static Map<String, String> getMapOfCoordinates(Artifact artifact) {
         Map<String, String> coordinates = new HashMap<>();
         artifact.askFor(ArtifactCoordinates.class)
-                .map(ArtifactCoordinates::getPurls)
+                .map(ArtifactCoordinates::getCoordinates)
                 .ifPresent(packageURLS -> packageURLS.forEach(packageURL ->
                         coordinates.put(packageURL.getType(), packageURL.canonicalize())));
         return coordinates;

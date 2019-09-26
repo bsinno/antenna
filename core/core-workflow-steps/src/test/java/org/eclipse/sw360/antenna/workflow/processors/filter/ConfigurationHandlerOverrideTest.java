@@ -99,7 +99,7 @@ public class ConfigurationHandlerOverrideTest extends CommonConfigurationHandler
                 .filter(a -> new ArtifactFilename(FILENAME).matches(a))
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("should not happen"));
-        assertThat(processedArtifact.askFor(ArtifactCoordinates.class).get().getPurls().stream()
+        assertThat(processedArtifact.askFor(ArtifactCoordinates.class).get().getCoordinates().stream()
                 .filter(p -> PackageURL.StandardTypes.MAVEN.equals(p.getType()))
                 .findAny()
                 .get()
