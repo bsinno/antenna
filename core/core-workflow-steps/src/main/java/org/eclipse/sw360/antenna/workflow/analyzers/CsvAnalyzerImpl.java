@@ -142,13 +142,17 @@ public class CsvAnalyzerImpl {
             case "mvn":
                 builder.withType(Coordinate.Types.MAVEN);
                 builder.withNamespace(record.get(GROUP));
+                break;
             case "dotnet":
                 builder.withType(Coordinate.Types.NUGET);
+                break;
             case "javascript":
                 builder.withType(Coordinate.Types.NPM);
                 builder.withNamespace(record.get(GROUP));
+                break;
             case "bundle":
                 builder.withType(Coordinate.Types.P2);
+                break;
         }
 
         return builder.build();

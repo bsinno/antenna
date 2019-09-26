@@ -13,7 +13,7 @@ package org.eclipse.sw360.antenna.p2resolver;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -104,7 +104,7 @@ public class ArtifactAttacherTest {
 
     private Artifact createArtifactWithBundleCoordinates(String jarName) {
         Artifact artifact = new Artifact();
-        artifact.addFact(new BundleCoordinates(jarName.split("_")[0], jarName.split("_")[1].replace(".jar", "")));
+        artifact.addCoordinate(new BundleCoordinate(jarName.split("_")[0], jarName.split("_")[1].replace(".jar", "")));
         return artifact;
     }
 

@@ -62,11 +62,14 @@ public class OrtResultArtifactResolver implements Function<Package, Artifact> {
             case "nuget":
             case "dotnet":
                 builder.withType(Coordinate.Types.NUGET);
+                break;
             case "maven":
                 builder.withType(Coordinate.Types.MAVEN);
                 builder.withNamespace(namespace);
+                break;
             case "npm":
                 builder.withType(Coordinate.Types.NPM);
+                break;
         }
         return builder.build();
     }

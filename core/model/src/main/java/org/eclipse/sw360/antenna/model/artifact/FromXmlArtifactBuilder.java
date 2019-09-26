@@ -20,6 +20,8 @@ import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSchemaType;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FromXmlArtifactBuilder implements IArtifactBuilder {
@@ -38,16 +40,18 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
 
     @Override
     public Artifact build() {
-        final ArtifactCoordinates artifactCoordinates = new ArtifactCoordinates(mavenCoordinates.build(),
-                bundleCoordinates.build(),
-                javaScriptCoordinates.build(),
-                dotNetCoordinates.build());
         final Artifact artifact = new Artifact("from XML")
-                .addFact(artifactCoordinates)
                 .addFact(new ArtifactFilename(filename, hash))
                 .addFact(new CopyrightStatement(copyrightStatement))
                 .addFact(new ArtifactMatchingMetadata(matchState))
                 .addFact(new ArtifactModificationStatus(modificationStatus));
+        Stream.of(mavenCoordinates,
+                bundleCoordinates,
+                javaScriptCoordinates,
+                dotNetCoordinates)
+                .filter(Objects::nonNull)
+                .map(CoordinatesBuilder::build)
+                .forEach(artifact::addCoordinate);
         if(declaredLicense != null) {
             final LicenseInformation licenseInfo = declaredLicense.getLicenseInfo().getValue();
             artifact.addFact(new DeclaredLicenseInformation(licenseInfo));
@@ -59,8 +63,12 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
         return artifact;
     }
 
+    public interface CoordinatesBuilder {
+        Coordinate build();
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class MavenCoordinatesBuilder {
+    public static class MavenCoordinatesBuilder implements CoordinatesBuilder {
 
         private String artifactId;
         private String groupId;
@@ -81,13 +89,14 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
             return this;
         }
 
+        @Override
         public Coordinate build() {
             return new MavenCoordinate(artifactId, groupId, version);
         }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class BundleCoordinatesBuilder {
+    public static class BundleCoordinatesBuilder implements CoordinatesBuilder {
         protected String symbolicName;
         protected String bundleVersion;
 
@@ -99,13 +108,14 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
             this.bundleVersion = value;
         }
 
+        @Override
         public Coordinate build() {
             return new BundleCoordinate(symbolicName, bundleVersion);
         }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class JavaScriptCoordinatesBuilder {
+    public static class JavaScriptCoordinatesBuilder implements CoordinatesBuilder {
         protected String artifactId;
         protected String name;
         protected String version;
@@ -125,13 +135,14 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
             return this;
         }
 
+        @Override
         public Coordinate build() {
             return new JavaScriptCoordinate(name, artifactId, version);
         }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class DotNetCoordinatesBuilder {
+    public static class DotNetCoordinatesBuilder implements CoordinatesBuilder {
         protected String packageId;
         protected String version;
 
@@ -145,6 +156,7 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
             return this;
         }
 
+        @Override
         public Coordinate build() {
             return new DotNetCoordinate(packageId, version);
         }

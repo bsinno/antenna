@@ -57,7 +57,7 @@ public class HttpRequesterTest extends AntennaTestWithMockedContext {
     @Before
     public void before() throws Exception {
         this.baseBefore();
-        mavenCoordinate = new MavenCoordinate("groupId", "artifactId", "version");
+        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
 
         ProxySettings proxySettings = new ProxySettings(false, null, 0);
 

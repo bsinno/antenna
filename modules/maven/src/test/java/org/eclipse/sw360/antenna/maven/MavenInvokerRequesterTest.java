@@ -48,7 +48,7 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
 
     @Before
     public void before() throws Exception {
-        mavenCoordinate = new MavenCoordinate("groupId", "artifactId", "version");
+        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
 
         System.setProperty("maven.home", temporaryFolder.newFolder("m2").toString());
 

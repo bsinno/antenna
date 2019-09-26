@@ -92,7 +92,7 @@ public class SecurityIssueValidatorTest extends AntennaTestWithMockedContext {
     }
 
     private Coordinate mkArtifactIdentifier() {
-        return new MavenCoordinate("com.test","test-artifact","1.0");
+        return new MavenCoordinate("test-artifact","com.test","1.0");
     }
 
     @Test

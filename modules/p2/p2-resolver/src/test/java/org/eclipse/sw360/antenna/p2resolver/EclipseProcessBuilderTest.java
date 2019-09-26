@@ -13,7 +13,7 @@ package org.eclipse.sw360.antenna.p2resolver;
 
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.java.BundleCoordinates;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
 import org.junit.Test;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class EclipseProcessBuilderTest {
     @Test
     public void testEclipseProcessBuilderCommandWorksCorrectlyWithHttpRepositoryAndOneArtifact() throws AntennaException {
         Artifact artifact = new Artifact();
-        artifact.addFact(new BundleCoordinates("TestBundle", "1.0.0"));
+        artifact.addCoordinate(new BundleCoordinate("TestBundle", "1.0.0"));
         File installArea = new File("test_file1");
         File downloadArea = new File("test_file2");
 
@@ -50,7 +50,7 @@ public class EclipseProcessBuilderTest {
     @Test
     public void testEclipseProcessBuilderCommandPrependsFileToUriIfItDoesNotHaveAScheme() throws AntennaException {
         Artifact artifact = new Artifact();
-        artifact.addFact(new BundleCoordinates("TestBundle", "1.0.0"));
+        artifact.addCoordinate(new BundleCoordinate("TestBundle", "1.0.0"));
         File installArea = new File("test_file1");
         File downloadArea = new File("test_file2");
 
@@ -65,9 +65,9 @@ public class EclipseProcessBuilderTest {
     @Test
     public void testEclipseProcessBuilderCommandCorrectlyChainsArtifacts() throws AntennaException {
         Artifact artifact1 = new Artifact();
-        artifact1.addFact(new BundleCoordinates("TestBundle1", "1.0.0"));
+        artifact1.addCoordinate(new BundleCoordinate("TestBundle1", "1.0.0"));
         Artifact artifact2 = new Artifact();
-        artifact2.addFact(new BundleCoordinates("TestBundle2", "1.0.0.v201"));
+        artifact2.addCoordinate(new BundleCoordinate("TestBundle2", "1.0.0.v201"));
         File installArea = new File("test_file1");
         File downloadArea = new File("test_file2");
 

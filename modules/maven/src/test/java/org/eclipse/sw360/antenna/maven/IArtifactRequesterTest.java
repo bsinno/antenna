@@ -36,7 +36,7 @@ public class IArtifactRequesterTest extends AntennaTestWithMockedContext {
 
     @Before
     public void before() throws Exception {
-        mavenCoordinate = new MavenCoordinate("groupId", "artifactId", "version");
+        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
     }
 
     @Test

@@ -13,7 +13,7 @@ public class MavenCoordinate extends Coordinate {
         }
     }
 
-    public MavenCoordinate(String groupId, String artifactId, String version) {
+    public MavenCoordinate(String artifactId, String groupId, String version) {
         super(TYPE, groupId, artifactId, version, null, null);
     }
 
