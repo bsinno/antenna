@@ -132,7 +132,7 @@ public class GivenSteps {
 
     private void addCoordinates(Artifact artifact, List<String> row) {
         if (Mappings.COORDINATES_FACTORY.containsKey(row.get(1))) {
-            artifact.addFact(Mappings.COORDINATES_FACTORY.get(row.get(1)).apply(row));
+            artifact.addCoordinate(Mappings.COORDINATES_FACTORY.get(row.get(1)).apply(row));
         } else {
             throw new RuntimeException(row.get(1) + " unknown, must be one of " + String.join(", ", Mappings.COORDINATES_FACTORY.keySet()));
         }

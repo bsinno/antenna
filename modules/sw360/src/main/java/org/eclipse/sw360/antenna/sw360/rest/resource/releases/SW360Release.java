@@ -13,7 +13,7 @@ package org.eclipse.sw360.antenna.sw360.rest.resource.releases;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.sw360.rest.resource.*;
 import org.eclipse.sw360.antenna.sw360.rest.resource.licenses.SW360SparseLicense;
 
@@ -134,7 +134,7 @@ public class SW360Release extends SW360HalResource<SW360ReleaseLinkObjects, SW36
     @JsonIgnore
     public Map<String, String> getCoordinates() {
         return externalIds.entrySet().stream()
-                .filter(e -> ArtifactCoordinates.StandardTypes.all.contains(e.getKey()))
+                .filter(e -> Coordinate.Types.all.contains(e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

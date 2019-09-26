@@ -10,9 +10,7 @@
  */
 package org.eclipse.sw360.antenna.policy.testing;
 
-import com.github.packageurl.MalformedPackageURLException;
 import cucumber.api.java.en.Given;
-import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
@@ -147,10 +145,6 @@ public class GivenSteps {
     }
 
     private void addCoordinates(List<String> row, Artifact artifact) {
-        try {
-            artifact.addFact(new ArtifactCoordinates(row.get(1)));
-        } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("failed to add Coordinates", e);
-        }
+        artifact.addFact(new ArtifactCoordinates(row.get(1)));
     }
 }

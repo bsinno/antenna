@@ -10,7 +10,6 @@
  */
 package org.eclipse.sw360.antenna.maven.workflow.processors.enricher;
 
-import com.github.packageurl.PackageURL;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.project.MavenProject;
@@ -25,6 +24,8 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactJar;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactSourceJar;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.util.ProxySettings;
 import org.slf4j.Logger;
@@ -99,54 +100,54 @@ public class MavenArtifactResolverImpl {
             dir.mkdirs();
         }
 
+        IArtifactRequester artifactRequester = sourcesRepositoryUrl != null
+                ? ArtifactRequesterFactory.getArtifactRequester(
+                optionalRepositorySystem, optionalMavenProject, optionalLegacySupport,
+                basedir, proxySettings, isMavenInstalled, sourcesRepositoryUrl)
+                : ArtifactRequesterFactory.getArtifactRequester(
+                optionalRepositorySystem, optionalMavenProject, optionalLegacySupport,
+                basedir, proxySettings, isMavenInstalled);
+
         List<Artifact> filteredArtifacts = artifacts.stream()
                 .filter(getFilterPredicate())
                 .filter(artifact -> !isIgnoredForSourceResolving(artifact))
                 .collect(Collectors.toList());
         for (Artifact artifact : filteredArtifacts) {
-            resolve(artifact, dependencyTargetDirectory);
+            resolve(artifact, artifactRequester, dependencyTargetDirectory);
         }
     }
 
 
-    private void resolve(Artifact artifact, Path dependencyTargetDirectory) throws AntennaException {
+    private void resolve(Artifact artifact, IArtifactRequester artifactRequester, Path dependencyTargetDirectory) {
         final Optional<ArtifactCoordinates> oCoordinates = artifact.askFor(ArtifactCoordinates.class);
         if (!oCoordinates.isPresent()) {
             return;
         }
-        final ArtifactCoordinates coordinates = oCoordinates.get();
-        final Optional<PackageURL> oMavenPurl = coordinates.getPurls().stream()
-                .filter(p -> PackageURL.StandardTypes.MAVEN.equals(p.getType()))
-                .findFirst();
+        final Optional<Coordinate> oMavenPurl = oCoordinates
+                .flatMap(coordinates -> coordinates.getPurlForType(Coordinate.Types.MAVEN));
         if (!oMavenPurl.isPresent()) {
             return;
         }
-        final PackageURL mavenPurl = oMavenPurl.get();
-        if (mavenPurl.getName() == null || mavenPurl.getNamespace() == null) {
+        final Coordinate coordinate = oMavenPurl.get();
+        if (coordinate.getName() == null || coordinate.getNamespace() == null || ! (coordinate instanceof MavenCoordinate)) {
             return;
         }
 
-        IArtifactRequester artifactRequester = sourcesRepositoryUrl != null
-                ? ArtifactRequesterFactory.getArtifactRequester(
-                        optionalRepositorySystem, optionalMavenProject, optionalLegacySupport,
-                        basedir, proxySettings, isMavenInstalled, sourcesRepositoryUrl)
-                : ArtifactRequesterFactory.getArtifactRequester(
-                        optionalRepositorySystem, optionalMavenProject, optionalLegacySupport,
-                        basedir, proxySettings, isMavenInstalled);
+        final MavenCoordinate mavenCoordinate = (MavenCoordinate) coordinate;
 
         // Try to download source with preferred qualifier first
         if (!artifact.getSourceFile().isPresent() && preferredSourceQualifier != null) {
-            Optional<File> sourceJar = artifactRequester.requestFile(mavenPurl, dependencyTargetDirectory, new ClassifierInformation(preferredSourceQualifier, true));
+            Optional<File> sourceJar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, new ClassifierInformation(preferredSourceQualifier, true));
             sourceJar.ifPresent(sourceJarFile -> artifact.addFact(new ArtifactSourceJar(sourceJarFile.toPath())));
         }
 
         if (!artifact.getSourceFile().isPresent()) {
-            Optional<File> sourceJar = artifactRequester.requestFile(mavenPurl, dependencyTargetDirectory, ClassifierInformation.DEFAULT_SOURCE_JAR);
+            Optional<File> sourceJar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_SOURCE_JAR);
             sourceJar.ifPresent(sourceJarFile -> artifact.addFact(new ArtifactSourceJar(sourceJarFile.toPath())));
         }
 
         if (!artifact.getFile().isPresent()) {
-            Optional<File> jar = artifactRequester.requestFile(mavenPurl, dependencyTargetDirectory, ClassifierInformation.DEFAULT_JAR);
+            Optional<File> jar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_JAR);
             jar.ifPresent(jarFile -> artifact.addFact(new ArtifactJar(jarFile.toPath())));
         }
 

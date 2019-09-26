@@ -14,8 +14,8 @@ package org.eclipse.sw360.antenna.sw360.workflow.processors;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseOperator;
@@ -239,7 +239,7 @@ public class SW360EnricherTest extends AntennaTestWithMockedContext {
 
         sw360Release.setDeclaredLicense("Apache-2.0");
         sw360Release.setObservedLicense("A Test License");
-        sw360Release.setCoordinates(Collections.singletonMap(ArtifactCoordinates.StandardTypes.MAVEN, "pkg:maven/test/test1@1.2.3"));
+        sw360Release.setCoordinates(Collections.singletonMap(Coordinate.Types.MAVEN, "pkg:maven/test/test1@1.2.3"));
         sw360Release.setReleaseTagUrl(releaseTagUrl);
         sw360Release.setSoftwareHeritageId(swhID);
         sw360Release.setHashes(Collections.singleton(hashString));

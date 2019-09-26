@@ -10,7 +10,7 @@
  */
 package org.eclipse.sw360.antenna.policy.engine;
 
-import com.github.packageurl.PackageURL;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +40,9 @@ public class RuleUtils {
 
     private static String getArtifactString(ThirdPartyArtifact[] failingArtifacts) {
         return Arrays.asList(failingArtifacts).stream()
-                .map(ThirdPartyArtifact::getPurl)
+                .map(ThirdPartyArtifact::getCoordinate)
                 .filter(Optional::isPresent)
-                .map(item -> item.map(PackageURL::canonicalize))
+                .map(item -> item.map(Coordinate::canonicalize))
                 .map(purl -> purl.orElse("pkg:generic/unknown"))
                 .collect(Collectors.joining(" : ", "[ ", " ]"));
     }

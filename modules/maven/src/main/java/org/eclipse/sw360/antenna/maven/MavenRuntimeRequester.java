@@ -10,7 +10,6 @@
  */
 package org.eclipse.sw360.antenna.maven;
 
-import com.github.packageurl.PackageURL;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -22,6 +21,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.repository.RepositorySystem;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,17 +64,17 @@ public class MavenRuntimeRequester extends IArtifactRequester {
     }
 
     @Override
-    public Optional<File> requestFile(PackageURL mavenPurl, Path targetDirectory, ClassifierInformation classifierInformation) {
+    public Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
         if (classifierInformation.isSource) {
-            return requestFile(mavenPurl, targetDirectory, "java-source", classifierInformation);
+            return requestFile(mavenCoordinate, targetDirectory, "java-source", classifierInformation);
         }
-        return requestFile(mavenPurl, targetDirectory, "jar", classifierInformation);
+        return requestFile(mavenCoordinate, targetDirectory, "jar", classifierInformation);
     }
 
-    private Optional<File> requestFile(PackageURL mavenPurl, Path targetDirectory, String type, ClassifierInformation classifier) {
-        String groupId = mavenPurl.getNamespace();
-        String artifactId = mavenPurl.getName();
-        String version = mavenPurl.getVersion();
+    private Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, String type, ClassifierInformation classifier) {
+        String groupId = mavenCoordinate.getGroupId();
+        String artifactId = mavenCoordinate.getArtifactId();
+        String version = mavenCoordinate.getVersion();
 
         Artifact mvnArtifact = classifier.classifier.isEmpty()
                 ? repositorySystem.createArtifact(groupId, artifactId, version, type)

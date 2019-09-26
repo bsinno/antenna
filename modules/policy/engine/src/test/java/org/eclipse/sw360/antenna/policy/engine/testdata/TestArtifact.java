@@ -10,8 +10,7 @@
  */
 package org.eclipse.sw360.antenna.policy.engine.testdata;
 
-import com.github.packageurl.MalformedPackageURLException;
-import com.github.packageurl.PackageURL;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.policy.engine.ThirdPartyArtifact;
 
 import java.util.Collection;
@@ -31,11 +30,7 @@ public class TestArtifact implements ThirdPartyArtifact {
     }
 
     @Override
-    public Optional<PackageURL> getPurl() {
-        try {
-            return Optional.of(new PackageURL("pkg:generic/unknown"));
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException(e);
-        }
+    public Optional<Coordinate> getCoordinate() {
+        return Optional.of(Coordinate.of("pkg:generic/unknown"));
     }
 }

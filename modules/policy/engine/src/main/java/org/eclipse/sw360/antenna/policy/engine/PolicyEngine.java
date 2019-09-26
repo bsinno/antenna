@@ -10,7 +10,7 @@
  */
 package org.eclipse.sw360.antenna.policy.engine;
 
-import com.github.packageurl.PackageURL;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +33,10 @@ public class PolicyEngine {
     public Collection<PolicyViolation> evaluate(final Collection<ThirdPartyArtifact> thirdPartyArtifacts) {
         LOGGER.info("Start policy engine run");
         LOGGER.debug("Artifacts are " + thirdPartyArtifacts.stream()
-                .map(ThirdPartyArtifact::getPurl)
+                .map(ThirdPartyArtifact::getCoordinate)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(PackageURL::canonicalize)
+                .map(Coordinate::canonicalize)
                 .collect(Collectors.joining(",", "[", "]")));
 
         return executors

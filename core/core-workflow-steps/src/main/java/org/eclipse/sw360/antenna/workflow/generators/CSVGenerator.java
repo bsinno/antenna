@@ -11,7 +11,6 @@
 
 package org.eclipse.sw360.antenna.workflow.generators;
 
-import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.api.IAttachable;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.api.workflow.AbstractGenerator;

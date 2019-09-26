@@ -10,10 +10,8 @@
  */
 package org.eclipse.sw360.antenna.sw360.workflow.processors;
 
-import com.github.packageurl.MalformedPackageURLException;
 import org.eclipse.sw360.antenna.api.IProcessingReporter;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
-import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
@@ -99,11 +97,7 @@ public class SW360EnricherImpl {
 
     private ArtifactCoordinates mapCoordinates(SW360Release sw360Release) {
         final Map<String, String> coordinates = sw360Release.getCoordinates();
-        try {
-            return new ArtifactCoordinates(new HashSet<>(coordinates.values()));
-        } catch (MalformedPackageURLException e) {
-            throw new AntennaExecutionException("Failed to map coordinates from SW360", e);
-        }
+        return new ArtifactCoordinates(new HashSet<>(coordinates.values()));
     }
 
     private void addSourceUrlIfAvailable(Artifact artifact, SW360Release release) {

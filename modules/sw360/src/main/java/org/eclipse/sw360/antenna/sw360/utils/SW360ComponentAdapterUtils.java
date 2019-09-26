@@ -10,10 +10,10 @@
  */
 package org.eclipse.sw360.antenna.sw360.utils;
 
-import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactSourceUrl;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360Component;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360ComponentType;
 
@@ -27,7 +27,7 @@ public class SW360ComponentAdapterUtils {
                 .map(ArtifactCoordinates::getPurls)
                 .flatMap(purls -> purls.stream()
                         .findFirst()) // TODO: ugly hack
-                .map(PackageURL::getName)
+                .map(Coordinate::getName)
                 .orElse(artifact.toString()); // TODO: ugly hack
     }
 
@@ -36,7 +36,7 @@ public class SW360ComponentAdapterUtils {
                 .map(ArtifactCoordinates::getPurls)
                 .flatMap(purls -> purls.stream()
                         .findFirst()) // TODO: ugly hack
-                .map(PackageURL::getVersion)
+                .map(Coordinate::getVersion)
                 .orElse("-");
     }
 

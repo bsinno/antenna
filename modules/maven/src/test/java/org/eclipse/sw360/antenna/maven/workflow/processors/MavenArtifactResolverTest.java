@@ -19,7 +19,7 @@ import org.eclipse.sw360.antenna.maven.workflow.processors.enricher.MavenArtifac
 import org.eclipse.sw360.antenna.maven.workflow.processors.enricher.MavenArtifactResolverImpl;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.util.ProxySettings;
@@ -98,7 +98,7 @@ public class MavenArtifactResolverTest extends AntennaTestWithMockedContext {
     private Artifact mkArtifact(String groupId, String name, String version) {
         Artifact artifact = new Artifact();
 
-        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(groupId, name, version));
+        artifact.addCoordinate(new MavenCoordinate(groupId, name, version));
         artifact.addFact(new ArtifactMatchingMetadata(MatchState.EXACT));
 
         return artifact;
