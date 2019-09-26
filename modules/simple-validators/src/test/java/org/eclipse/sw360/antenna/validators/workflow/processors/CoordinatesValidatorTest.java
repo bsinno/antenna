@@ -11,7 +11,8 @@
 package org.eclipse.sw360.antenna.validators.workflow.processors;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -54,26 +55,26 @@ public class CoordinatesValidatorTest extends AntennaTestWithMockedContext {
 
     @Test
     public void validateCoordinatesTestEmptyMvn() {
-        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(null,null,null));
+        artifact.addCoordinate(new MavenCoordinate(null,null,null));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(1);
     }
 
     @Test
     public void validateCoordinatesTestMvn() {
-        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("test", "test", "test"));
+        artifact.addCoordinate(new MavenCoordinate("test", "test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2() {
-        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates("test", "test"));
+        artifact.addCoordinate(new BundleCoordinate("test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2andMvn() {
-        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("test", "test", "test"));
-        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates("test", "test"));
+        artifact.addCoordinate(new MavenCoordinate("test", "test", "test"));
+        artifact.addCoordinate(new BundleCoordinate("test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 

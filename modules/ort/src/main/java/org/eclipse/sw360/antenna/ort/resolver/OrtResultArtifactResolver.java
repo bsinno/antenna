@@ -15,9 +15,8 @@ import com.here.ort.model.Package;
 import com.here.ort.model.config.PathExclude;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.eclipse.sw360.antenna.util.LicenseSupport;
 
@@ -38,7 +37,7 @@ public class OrtResultArtifactResolver implements Function<Package, Artifact> {
         Artifact a = new Artifact("OrtResult")
                 .addFact(new ArtifactMatchingMetadata(MatchState.EXACT));
 
-        mapCoordinates(pkg).ifPresent(a::addFact);
+        a.addCoordinate(mapCoordinates(pkg));
         mapSourceUrl(pkg).ifPresent(a::addFact);
 
         mapDeclaredLicense(pkg).ifPresent(a::addFact);
@@ -51,38 +50,25 @@ public class OrtResultArtifactResolver implements Function<Package, Artifact> {
         return a;
     }
 
-    private static Optional<ArtifactCoordinates> mapCoordinates(Package pkg) {
+    private static Coordinate mapCoordinates(Package pkg) {
         String namespace = pkg.getId().getNamespace();
         String name = pkg.getId().getName();
         String version = pkg.getId().getVersion();
 
+        final Coordinate.Builder builder = Coordinate.builder()
+                .withName(name)
+                .withVersion(version);
         switch (pkg.getId().getType().toLowerCase()) {
             case "nuget":
             case "dotnet":
-                return Optional.of(mapDotNetCoordinates(name, version));
+                builder.withType(Coordinate.Types.NUGET);
             case "maven":
-                return Optional.of(mapMavenCoordinates(namespace, name, version));
+                builder.withType(Coordinate.Types.MAVEN);
+                builder.withNamespace(namespace);
             case "npm":
-                return Optional.of(mapJavaScriptCoordinates(name, version));
-            default:
-                return Optional.of(mapSimpleCoordinates(name, version));
+                builder.withType(Coordinate.Types.NPM);
         }
-    }
-
-    private static ArtifactCoordinates mapDotNetCoordinates(String name, String version) {
-        return ArtifactCoordinatesUtils.mkDotNetCoordinates(name, version);
-    }
-
-    private static ArtifactCoordinates mapMavenCoordinates(String namespace, String name, String version) {
-        return ArtifactCoordinatesUtils.mkMavenCoordinates(name, name, version);
-    }
-
-    private static ArtifactCoordinates mapJavaScriptCoordinates(String name, String version) {
-        return ArtifactCoordinatesUtils.mkJavaScriptCoordinates(name, name + "-" + version, version); // TODO: this is broken
-    }
-
-    private static ArtifactCoordinates mapSimpleCoordinates(String name, String version) {
-        return new ArtifactCoordinates(name, version);
+        return builder.build();
     }
 
     private static Optional<ArtifactSourceUrl> mapSourceUrl(Package pkg) {

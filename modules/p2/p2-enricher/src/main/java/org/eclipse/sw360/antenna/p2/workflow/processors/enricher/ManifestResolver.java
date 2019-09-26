@@ -17,8 +17,8 @@ import org.eclipse.sw360.antenna.api.workflow.AbstractProcessor;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.util.AntennaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +145,7 @@ public class ManifestResolver extends AbstractProcessor {
         final Optional<String> symbolicName = getAttribute(manifest, "Bundle-SymbolicName");
         final Optional<String> version = getAttribute(manifest, "Bundle-Version");
         if(symbolicName.isPresent() || version.isPresent()) {
-            artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates(symbolicName.orElse(null), version.orElse(null)));
+            artifact.addCoordinate(new BundleCoordinate(symbolicName.orElse(null), version.orElse(null)));
         }
     }
 

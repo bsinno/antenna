@@ -10,7 +10,6 @@
  */
 package org.eclipse.sw360.antenna.p2.workflow.processors.enricher;
 
-import com.github.packageurl.PackageURL;
 import org.assertj.core.api.Assertions;
 import org.eclipse.sw360.antenna.api.IProject;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
@@ -18,6 +17,7 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.testing.util.JarCreator;
 import org.junit.After;
@@ -68,10 +68,8 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
 
     private void assertManifestMetadata(Artifact artifact) {
         final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
-        final Optional<PackageURL> bundleCoordinates = artifactCoordinates.map(ArtifactCoordinates::getPurls)
-                .flatMap(packageURLS -> packageURLS.stream()
-                            .filter(packageURL -> ArtifactCoordinates.StandardTypes.BUNDLE.equals(packageURL.getType()))
-                            .findFirst());
+        final Optional<Coordinate> bundleCoordinates = artifactCoordinates
+                .flatMap(c -> c.getPurlForType(Coordinate.Types.P2));
         Assertions.assertThat(bundleCoordinates.isPresent()).isTrue();
         Assertions.assertThat(bundleCoordinates.get().getName())
                 .isEqualTo(JarCreator.testManifestSymbolicName);
@@ -98,11 +96,8 @@ public class ManifestResolverTest extends AntennaTestWithMockedContext {
 
         final Optional<ArtifactCoordinates> bundleCoordinates = artifacts.get(0).askFor(ArtifactCoordinates.class);
         Assertions.assertThat(bundleCoordinates
-                .map(ArtifactCoordinates::getPurls)
-                .map(packageURLS -> packageURLS.stream()
-                        .map(PackageURL::getType)
-                        .anyMatch(ArtifactCoordinates.StandardTypes.BUNDLE::equals))
-                .orElse(false)).isFalse();
+                .flatMap(c -> c.getPurlForType(Coordinate.Types.P2))
+                .isPresent()).isFalse();
     }
 
     @Test

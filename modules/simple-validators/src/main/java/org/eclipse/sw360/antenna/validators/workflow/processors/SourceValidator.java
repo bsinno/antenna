@@ -11,7 +11,6 @@
 
 package org.eclipse.sw360.antenna.validators.workflow.processors;
 
-import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.api.IEvaluationResult;
 import org.eclipse.sw360.antenna.api.IPolicyEvaluation;
 import org.eclipse.sw360.antenna.api.IProcessingReporter;
@@ -19,6 +18,7 @@ import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.workflow.stubs.AbstractComplianceChecker;
 import org.eclipse.sw360.antenna.workflow.stubs.DefaultPolicyEvaluation;
@@ -169,11 +169,8 @@ public class SourceValidator extends AbstractComplianceChecker {
                 .filter(artifact ->  {
                     final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
                     return artifactCoordinates
-                            .map(ArtifactCoordinates::getPurls)
-                            .map(packageURLS -> packageURLS.stream()
-                                    .map(PackageURL::getType)
-                                    .anyMatch(ArtifactCoordinates.StandardTypes.MAVEN::equals))
-                            .orElse(false);
+                            .flatMap(a -> a.getPurlForType(Coordinate.Types.MAVEN))
+                            .isPresent();
                 })
                 .forEach(artifact -> validateSources(artifact)
                         .forEach(policyEvaluation::addEvaluationResult));
