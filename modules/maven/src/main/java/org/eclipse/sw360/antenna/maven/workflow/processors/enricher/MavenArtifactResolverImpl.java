@@ -22,7 +22,7 @@ import org.eclipse.sw360.antenna.maven.ClassifierInformation;
 import org.eclipse.sw360.antenna.maven.IArtifactRequester;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactJar;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactSourceJar;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;

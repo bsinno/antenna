@@ -11,11 +11,13 @@
 package org.eclipse.sw360.antenna.model.test;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorAndSet;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -198,11 +200,10 @@ public class ArtifactSelectorTest {
 
     private Artifact createArtifact(String hash, String artifactId, String groupId, String version,
                                     String bundleVersion, String symbolicName) {
-        Artifact artifact = new Artifact();
-        artifact.addFact(new ArtifactFilename(defaultFileName, hash));
-        artifact.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(artifactId, groupId, version));
-        artifact.addFact(ArtifactCoordinatesUtils.mkBundleCoordinates(symbolicName, bundleVersion));
-        return artifact;
+        return new Artifact()
+                .addFact(new ArtifactFilename(defaultFileName, hash))
+                .addCoordinate(new MavenCoordinate(artifactId, groupId, version))
+                .addCoordinate(new BundleCoordinate(symbolicName, bundleVersion));
     }
 
     private ArtifactSelector createArtifactSelector(String filename, String hash, String artifactId, String groupId,
@@ -213,10 +214,10 @@ public class ArtifactSelectorTest {
             identifierSet.add(new ArtifactFilename(filename, hash));
         }
         if(artifactId != null || groupId != null || version != null) {
-            identifierSet.add(ArtifactCoordinatesUtils.mkMavenCoordinates(artifactId, groupId, version));
+            identifierSet.add(new ArtifactCoordinates(new MavenCoordinate(artifactId, groupId, version)));
         }
         if(symbolicName != null || bundleVersion != null) {
-            identifierSet.add(ArtifactCoordinatesUtils.mkBundleCoordinates(symbolicName, bundleVersion));
+            identifierSet.add(new ArtifactCoordinates(new BundleCoordinate(symbolicName, bundleVersion)));
         }
         return new ArtifactSelectorAndSet(identifierSet);
     }

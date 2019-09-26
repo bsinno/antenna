@@ -16,8 +16,9 @@ import org.eclipse.sw360.antenna.api.IAttachable;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.api.workflow.AbstractGenerator;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.api.Attachable;
@@ -71,12 +72,11 @@ public class CSVGenerator extends AbstractGenerator {
                     .map(ArtifactFilename.ArtifactFilenameEntry::getFilename)
                     .orElse(""));
 
-            final Optional<ArtifactCoordinates> artifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
-            if(artifactCoordinates.isPresent()) {
-                final Set<PackageURL> purls = artifactCoordinates.get().getPurls();
-                final Optional<PackageURL> mavenPURL = purls.stream()
-                        .filter(packageURL -> PackageURL.StandardTypes.MAVEN.equals(packageURL.getType()))
-                        .findFirst();
+            final Optional<ArtifactCoordinates> oArtifactCoordinates = artifact.askFor(ArtifactCoordinates.class);
+            if(oArtifactCoordinates.isPresent()) {
+                final ArtifactCoordinates artifactCoordinates = oArtifactCoordinates.get();
+
+                Optional<Coordinate> mavenPURL = artifactCoordinates.getPurlForType(Coordinate.Types.MAVEN);
                 if(mavenPURL.isPresent()) {
                     appendInformation(information, mavenPURL.get().getName());
                     appendInformation(information, mavenPURL.get().getNamespace());
@@ -87,9 +87,7 @@ public class CSVGenerator extends AbstractGenerator {
                     appendInformation(information, "");
                 }
 
-                final Optional<PackageURL> bundlePURL = purls.stream()
-                        .filter(packageURL -> "p2".equals(packageURL.getType()))
-                        .findFirst();
+                Optional<Coordinate> bundlePURL = artifactCoordinates.getPurlForType(Coordinate.Types.BUNDLE);
                 if(bundlePURL.isPresent()) {
                     // appendInformation(information, bundlePURL.get().getName());
                     appendInformation(information, bundlePURL.get().getVersion());

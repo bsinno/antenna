@@ -14,6 +14,7 @@ import com.github.packageurl.MalformedPackageURLException;
 import cucumber.api.java.en.Given;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;

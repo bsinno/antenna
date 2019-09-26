@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.model.Configuration;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.xml.generated.AntennaConfig;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;

@@ -12,7 +12,7 @@ package org.eclipse.sw360.antenna.sw360.utils;
 
 import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactSourceUrl;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360Component;
 import org.eclipse.sw360.antenna.sw360.rest.resource.components.SW360ComponentType;

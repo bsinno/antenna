@@ -11,6 +11,7 @@
 
 package org.eclipse.sw360.antenna.drools.testing;
 
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;

@@ -17,7 +17,7 @@ import org.eclipse.sw360.antenna.api.configuration.AntennaContext;
 import org.eclipse.sw360.antenna.api.workflow.WorkflowStepResult;
 import org.eclipse.sw360.antenna.frontend.stub.mojo.WrappedDependencyNodes;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;

@@ -15,6 +15,7 @@ import org.eclipse.sw360.antenna.api.IProcessingReporter;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
@@ -31,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SW360EnricherImpl {
 

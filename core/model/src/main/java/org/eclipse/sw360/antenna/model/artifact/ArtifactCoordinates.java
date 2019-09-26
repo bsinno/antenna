@@ -9,15 +9,16 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package org.eclipse.sw360.antenna.model.artifact.facts;
+package org.eclipse.sw360.antenna.model.artifact;
 
+import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
 import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates> {
+public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates>, ArtifactFact<ArtifactCoordinates> {
     private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     private void putPurl(Coordinate packageURL) {

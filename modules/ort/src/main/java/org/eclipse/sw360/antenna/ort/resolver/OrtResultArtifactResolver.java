@@ -15,6 +15,7 @@ import com.here.ort.model.Package;
 import com.here.ort.model.config.PathExclude;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;

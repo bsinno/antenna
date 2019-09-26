@@ -84,11 +84,14 @@ public class Coordinate {
     }
 
     public boolean matches(Coordinate coordinate) {
+        if(coordinate == null) {
+            return false;
+        }
         return compareStringsAsWildcard(getScheme(), coordinate.getScheme()) &&
-                compareStringsAsWildcard(getType(), coordinate.getScheme()) &&
-                compareStringsAsWildcard(getNamespace(), coordinate.getScheme()) &&
-                compareStringsAsWildcard(getName(), coordinate.getScheme()) &&
-                compareStringsAsWildcard(getVersion(), coordinate.getScheme()) &&
+                compareStringsAsWildcard(getType(), coordinate.getType()) &&
+                compareStringsAsWildcard(getNamespace(), coordinate.getNamespace()) &&
+                compareStringsAsWildcard(getName(), coordinate.getName()) &&
+                compareStringsAsWildcard(getVersion(), coordinate.getVersion()) &&
                 compareStringsAsWildcard(getSubpath(), coordinate.getSubpath());
     }
 

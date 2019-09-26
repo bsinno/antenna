@@ -12,9 +12,10 @@ package org.eclipse.sw360.antenna.workflow.processors.filter;
 
 import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ public class ConfigurationHandlerOverrideTest extends CommonConfigurationHandler
 
     private Artifact getArtifactToOverwriteWith(MatchState matchState) {
         Artifact artifactToOverwriteWith = new Artifact();
-        artifactToOverwriteWith.addFact(ArtifactCoordinatesUtils.mkMavenCoordinates(OVERRIDE_ID, null, null));
+        artifactToOverwriteWith.addCoordinate(new MavenCoordinate(OVERRIDE_ID, null, null));
         Optional.ofNullable(matchState)
                 .ifPresent(ms -> artifactToOverwriteWith.addFact(new ArtifactMatchingMetadata(ms)));
         return artifactToOverwriteWith;

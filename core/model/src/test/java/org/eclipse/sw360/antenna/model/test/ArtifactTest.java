@@ -11,8 +11,10 @@
 package org.eclipse.sw360.antenna.model.test;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseOperator;
@@ -45,7 +47,7 @@ public class ArtifactTest {
         mavenSourcesJar = temp.newFile("sourcesJar.jar").toPath();
 
         artifact = new Artifact("Test")
-                .addFact(ArtifactCoordinatesUtils.mkMavenCoordinates("artifactId", "groupId", "version"))
+                .addCoordinate(new MavenCoordinate("artifactId", "groupId", "version"))
                 .addFact(new ArtifactCoordinates("name", "version"))
                 .addFact(new ArtifactFile(jar))
                 .addFact(new ArtifactSourceFile(mavenSourcesJar))
@@ -61,13 +63,16 @@ public class ArtifactTest {
     @Test
     public void artifactTest() {
         System.out.println(artifact.prettyPrint());
-        assertThat(artifact.getArtifactIdentifiers().size()).isEqualTo(3);
+        assertThat(artifact.getArtifactIdentifiers().size()).isEqualTo(2);
 
         assertThat(new ArtifactCoordinates("name", "version").matches(artifact)).isTrue();
         assertThat(new ArtifactCoordinates("name", "otherVersion").matches(artifact)).isFalse();
-        assertThat(new ArtifactCoordinates("name", null).matches(artifact)).isFalse();
-        assertThat(ArtifactCoordinatesUtils.mkBundleCoordinates("name", "version").matches(artifact)).isFalse();
-        assertThat(ArtifactCoordinatesUtils.mkMavenCoordinates("artifactId", "groupId", "version").matches(artifact)).isTrue();
+        assertThat(new ArtifactCoordinates("name", "").matches(artifact)).isFalse();
+        assertThat(new ArtifactCoordinates("name", null).matches(artifact)).isTrue();
+        assertThat(new ArtifactCoordinates("name", "*").matches(artifact)).isTrue();
+        assertThat(new ArtifactCoordinates("name", "v*n").matches(artifact)).isTrue();
+        assertThat(new ArtifactCoordinates(new BundleCoordinate("name", "version")).matches(artifact)).isFalse();
+        assertThat(new ArtifactCoordinates(new MavenCoordinate("artifactId", "groupId", "version")).matches(artifact)).isTrue();
 
         File found = artifact.askForGet(ArtifactFile.class).get().toFile();
         assertThat(found).isEqualTo(jar.toFile());

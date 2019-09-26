@@ -11,6 +11,7 @@
 package org.eclipse.sw360.antenna.jsonreader;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.xml.generated.Issue;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
@@ -25,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;

@@ -16,8 +16,6 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.utils.cli.CommandLineException;
-import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
@@ -29,7 +27,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;

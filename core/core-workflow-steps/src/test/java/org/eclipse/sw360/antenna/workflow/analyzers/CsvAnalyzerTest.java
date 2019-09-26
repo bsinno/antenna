@@ -16,6 +16,7 @@ import org.eclipse.sw360.antenna.api.IProject;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
 import org.eclipse.sw360.antenna.model.util.ClassCodeSourceLocation;

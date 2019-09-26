@@ -14,6 +14,7 @@ package org.eclipse.sw360.antenna.sw360.workflow.processors;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;

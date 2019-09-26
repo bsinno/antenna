@@ -14,7 +14,7 @@ import com.github.packageurl.PackageURL;
 import org.assertj.core.api.Assertions;
 import org.eclipse.sw360.antenna.api.IProject;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;

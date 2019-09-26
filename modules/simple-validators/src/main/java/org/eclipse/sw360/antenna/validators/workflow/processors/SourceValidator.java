@@ -18,7 +18,7 @@ import org.eclipse.sw360.antenna.api.IProcessingReporter;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.workflow.stubs.AbstractComplianceChecker;
 import org.eclipse.sw360.antenna.workflow.stubs.DefaultPolicyEvaluation;

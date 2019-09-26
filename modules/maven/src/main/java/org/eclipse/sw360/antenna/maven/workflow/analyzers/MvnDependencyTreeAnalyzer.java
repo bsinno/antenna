@@ -17,10 +17,9 @@ import org.eclipse.sw360.antenna.api.workflow.WorkflowStepResult;
 import org.eclipse.sw360.antenna.frontend.stub.mojo.WrappedDependencyNodes;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 
 import java.util.List;
@@ -61,7 +60,7 @@ public class MvnDependencyTreeAnalyzer extends AbstractAnalyzer {
             paths = new String[0];
         }
 
-        antennaArtifact.addFact(getMavenCoordinates(node));
+        antennaArtifact.addCoordinate(getMavenCoordinate(node));
         if(node.getArtifact().getFile() != null) {
             antennaArtifact.addFact(new ArtifactFile(node.getArtifact().getFile().toPath()));
         }
@@ -70,8 +69,8 @@ public class MvnDependencyTreeAnalyzer extends AbstractAnalyzer {
         return antennaArtifact;
     }
 
-    private ArtifactIdentifier getMavenCoordinates(DependencyNode node) {
-        return ArtifactCoordinatesUtils.mkMavenCoordinates(
+    private MavenCoordinate getMavenCoordinate(DependencyNode node) {
+        return new MavenCoordinate(
                 node.getArtifact().getArtifactId(),
                 node.getArtifact().getGroupId(),
                 node.getArtifact().getVersion());

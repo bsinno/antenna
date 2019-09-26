@@ -17,9 +17,13 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
+import org.eclipse.sw360.antenna.model.coordinates.DotNetCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.JavaScriptCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.*;
 import org.eclipse.sw360.antenna.util.LicenseSupport;
 import org.slf4j.Logger;
@@ -131,7 +135,7 @@ public class JsonReader {
                 .addFact(new ArtifactIssues(mapSecurityIssues(securityDataObj)))
                 .setProprietary(mapProprietary(obj))
                 .addFact(new ArtifactSourceUrl(mapArtifactDownloadurl(obj)));
-        mapCoordinates(obj).ifPresent(a::addFact);
+        mapCoordinates(obj).ifPresent(a::addCoordinate);
         potentiallyAddSpecialLicenseInformation(licenseDataObj, a);
         return a;
     }
@@ -252,9 +256,9 @@ public class JsonReader {
         return MatchState.valueOf(ms.toUpperCase());
     }
 
-    private Optional<ArtifactCoordinates> mapMavenCoordinates(JsonObject objCoordinates) {
+    private Optional<Coordinate> mapMavenCoordinates(JsonObject objCoordinates) {
         if (null != objCoordinates) {
-            return Optional.of(ArtifactCoordinatesUtils.mkMavenCoordinates(
+            return Optional.of(new MavenCoordinate(
                     (String) objCoordinates.get("artifactId"),
                     (String) objCoordinates.get("groupId"),
                     (String) objCoordinates.get("version")));
@@ -262,25 +266,25 @@ public class JsonReader {
         return Optional.empty();
     }
 
-    private Optional<ArtifactCoordinates> mapJavaScriptCoordinates(JsonObject objCoordinates) {
+    private Optional<Coordinate> mapJavaScriptCoordinates(JsonObject objCoordinates) {
         if (objCoordinates != null) {
-            return Optional.of(ArtifactCoordinatesUtils.mkJavaScriptCoordinates(
+            return Optional.of(new JavaScriptCoordinate(
                     (String) objCoordinates.get("name"),
-                    objCoordinates.get("name") + "-" + objCoordinates.get("version"), // TODO: this is broken
                     (String) objCoordinates.get("version")));
         }
         return Optional.empty();
     }
 
-    private Optional<ArtifactCoordinates> mapDotNetCoordinates(JsonObject objCoordinates) {
+    private Optional<Coordinate> mapDotNetCoordinates(JsonObject objCoordinates) {
         if (objCoordinates != null) {
-            return Optional.of(ArtifactCoordinatesUtils.mkDotNetCoordinates((String) objCoordinates.get("packageId"),
+            return Optional.of(new DotNetCoordinate(
+                    (String) objCoordinates.get("packageId"),
                     (String) objCoordinates.get("version")));
         }
         return Optional.empty();
     }
 
-    private Optional<ArtifactCoordinates> mapCoordinates(JsonObject object) {
+    private Optional<Coordinate> mapCoordinates(JsonObject object) {
         JsonObject objComponentIdentifier = (JsonObject) object.get("componentIdentifier");
         if (objComponentIdentifier != null) {
             String format = (String) objComponentIdentifier.get("format");

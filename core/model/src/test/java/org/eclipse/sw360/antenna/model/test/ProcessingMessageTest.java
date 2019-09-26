@@ -10,7 +10,7 @@
  */
 package org.eclipse.sw360.antenna.model.test;
 
-import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactCoordinates;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.model.reporting.ProcessingMessage;

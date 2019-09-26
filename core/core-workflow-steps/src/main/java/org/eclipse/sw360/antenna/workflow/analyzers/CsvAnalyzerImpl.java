@@ -15,9 +15,10 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
+import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.util.ArtifactCoordinatesUtils;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class CsvAnalyzerImpl {
 
     private Artifact createNewArtifact(CSVRecord record) {
         Artifact artifact = new Artifact(nameOfAnalyzer)
-                .addFact(createCoordinates(record))
+                .addCoordinate(createCoordinates(record))
                 .addFact(new ArtifactMatchingMetadata(MatchState.EXACT));
         addOptionalArtifactFacts(record, artifact);
         return artifact;
@@ -131,21 +132,26 @@ public class CsvAnalyzerImpl {
         return records;
     }
 
-    private ArtifactCoordinates createCoordinates(CSVRecord record) {
-        String type = record.isMapped(COORDINATE_TYPE) ? record.get(COORDINATE_TYPE) : "mvn";
+    private Coordinate createCoordinates(CSVRecord record) {
+        final Coordinate.Builder builder = Coordinate.builder()
+                .withName(record.get(NAME))
+                .withVersion(record.get(VERSION));
 
+        String type = record.isMapped(COORDINATE_TYPE) ? record.get(COORDINATE_TYPE) : "mvn";
         switch (type) {
             case "mvn":
-                return ArtifactCoordinatesUtils.mkMavenCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
+                builder.withType(Coordinate.Types.MAVEN);
+                builder.withNamespace(record.get(GROUP));
             case "dotnet":
-                return ArtifactCoordinatesUtils.mkDotNetCoordinates(record.get(NAME), record.get(VERSION));
+                builder.withType(Coordinate.Types.NUGET);
             case "javascript":
-                return ArtifactCoordinatesUtils.mkJavaScriptCoordinates(record.get(NAME), record.get(GROUP), record.get(VERSION));
+                builder.withType(Coordinate.Types.NPM);
+                builder.withNamespace(record.get(GROUP));
             case "bundle":
-                return ArtifactCoordinatesUtils.mkBundleCoordinates(record.get(NAME), record.get(VERSION));
-            default:
-                return new ArtifactCoordinates(record.get(NAME), record.get(VERSION));
+                builder.withType(Coordinate.Types.BUNDLE);
         }
+
+        return builder.build();
     }
 
     private String makePathAbsolute(String pathName) {
