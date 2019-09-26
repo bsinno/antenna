@@ -79,10 +79,6 @@ public class Coordinate {
         return packageURL.canonicalize();
     }
 
-    public boolean isEmpty() {
-        return getNamespace() == null && getName() == null && getVersion() == null;
-    }
-
     public boolean matches(String packageUrlString) {
         return matches(Coordinate.of(packageUrlString));
     }
