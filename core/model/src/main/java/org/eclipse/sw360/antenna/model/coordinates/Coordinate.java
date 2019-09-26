@@ -109,11 +109,11 @@ public class Coordinate {
     }
 
     public static class Types extends PackageURL.StandardTypes {
-        public static final String BUNDLE = "p2";
+        public static final String P2 = "p2";
 
         public static final Set<String> all = Stream.of(
                 BITBUCKET, COMPOSER, DEBIAN, DOCKER, GEM, GENERIC, GITHUB, GOLANG, MAVEN, NPM, NUGET, PYPI, RPM,
-                BUNDLE)
+                P2)
                 .collect(Collectors.toSet());
     }
 

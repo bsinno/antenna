@@ -4,7 +4,7 @@ import com.github.packageurl.PackageURL;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
 
 public class BundleCoordinate extends Coordinate {
-    public static final String TYPE = Types.BUNDLE;
+    public static final String TYPE = Types.P2;
 
     public BundleCoordinate(PackageURL packageURL) {
         super(packageURL);

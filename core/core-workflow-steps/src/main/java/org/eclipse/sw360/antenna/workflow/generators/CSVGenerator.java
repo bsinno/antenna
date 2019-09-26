@@ -86,7 +86,7 @@ public class CSVGenerator extends AbstractGenerator {
                     appendInformation(information, "");
                 }
 
-                Optional<Coordinate> bundlePURL = artifactCoordinates.getPurlForType(Coordinate.Types.BUNDLE);
+                Optional<Coordinate> bundlePURL = artifactCoordinates.getPurlForType(Coordinate.Types.P2);
                 if(bundlePURL.isPresent()) {
                     // appendInformation(information, bundlePURL.get().getName());
                     appendInformation(information, bundlePURL.get().getVersion());

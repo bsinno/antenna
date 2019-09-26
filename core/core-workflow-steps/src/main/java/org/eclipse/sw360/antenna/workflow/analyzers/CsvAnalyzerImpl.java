@@ -148,7 +148,7 @@ public class CsvAnalyzerImpl {
                 builder.withType(Coordinate.Types.NPM);
                 builder.withNamespace(record.get(GROUP));
             case "bundle":
-                builder.withType(Coordinate.Types.BUNDLE);
+                builder.withType(Coordinate.Types.P2);
         }
 
         return builder.build();
