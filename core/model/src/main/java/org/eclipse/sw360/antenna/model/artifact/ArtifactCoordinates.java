@@ -21,12 +21,14 @@ import java.util.stream.Stream;
 public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoordinates>, ArtifactFact<ArtifactCoordinates> {
     private final Map<String, Coordinate> coordinates = new HashMap<>();
 
-    private void putPurl(Coordinate packageURL) {
-        coordinates.put(packageURL.getType(), packageURL);
+    private void putCoordinate(Coordinate coordinate) {
+        if (coordinate != null && ! coordinate.isEmpty()) {
+            coordinates.put(coordinate.getType(), coordinate);
+        }
     }
 
-    private void putPurls(Collection<Coordinate> packageURLS) {
-        packageURLS.forEach(this::putPurl);
+    private void putCoordinates(Collection<Coordinate> coordinates) {
+        coordinates.forEach(this::putCoordinate);
     }
 
     public ArtifactCoordinates(String name, String version) {
@@ -39,22 +41,22 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
     }
 
     public ArtifactCoordinates(Coordinate... coordinatesToAdd) {
-        putPurls(Arrays.asList(coordinatesToAdd));
+        putCoordinates(Arrays.asList(coordinatesToAdd));
     }
 
     public ArtifactCoordinates(String... coordinateStringsToAdd) {
         for (String coordinateStringToAdd: coordinateStringsToAdd) {
-            putPurl(Coordinate.builder(coordinateStringToAdd).build());
+            putCoordinate(Coordinate.builder(coordinateStringToAdd).build());
         }
     }
 
     public ArtifactCoordinates(Collection<Coordinate> coordinatesToAdd) {
-        putPurls(coordinatesToAdd);
+        putCoordinates(coordinatesToAdd);
     }
 
     public ArtifactCoordinates(Set<String> coordinateStringsToAdd) {
         for (String coordinateStringToAdd: coordinateStringsToAdd) {
-            putPurl(Coordinate.of(coordinateStringToAdd));
+            putCoordinate(Coordinate.of(coordinateStringToAdd));
         }
     }
 
