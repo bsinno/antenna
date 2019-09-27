@@ -22,7 +22,7 @@ public final class ArtifactCoordinates implements ArtifactIdentifier<ArtifactCoo
     private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     private void putCoordinate(Coordinate coordinate) {
-        if (coordinate != null && ! coordinate.isEmpty()) {
+        if (coordinate != null) {
             coordinates.put(coordinate.getType(), coordinate);
         }
     }
