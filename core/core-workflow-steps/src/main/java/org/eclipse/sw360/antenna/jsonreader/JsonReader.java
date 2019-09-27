@@ -20,9 +20,6 @@ import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
 import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
-import org.eclipse.sw360.antenna.model.coordinates.DotNetCoordinate;
-import org.eclipse.sw360.antenna.model.coordinates.JavaScriptCoordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.*;
 import org.eclipse.sw360.antenna.util.LicenseSupport;
 import org.slf4j.Logger;
@@ -257,9 +254,10 @@ public class JsonReader {
 
     private Optional<Coordinate> mapMavenCoordinates(JsonObject objCoordinates) {
         if (null != objCoordinates) {
-            return Optional.of(new MavenCoordinate(
-                    (String) objCoordinates.get("artifactId"),
+            return Optional.of(new Coordinate(
+                    Coordinate.Types.MAVEN,
                     (String) objCoordinates.get("groupId"),
+                    (String) objCoordinates.get("artifactId"),
                     (String) objCoordinates.get("version")));
         }
         return Optional.empty();
@@ -267,7 +265,8 @@ public class JsonReader {
 
     private Optional<Coordinate> mapJavaScriptCoordinates(JsonObject objCoordinates) {
         if (objCoordinates != null) {
-            return Optional.of(new JavaScriptCoordinate(
+            return Optional.of(new Coordinate(
+                    Coordinate.Types.NPM,
                     (String) objCoordinates.get("name"),
                     (String) objCoordinates.get("version")));
         }
@@ -276,7 +275,8 @@ public class JsonReader {
 
     private Optional<Coordinate> mapDotNetCoordinates(JsonObject objCoordinates) {
         if (objCoordinates != null) {
-            return Optional.of(new DotNetCoordinate(
+            return Optional.of(new Coordinate(
+                    Coordinate.Types.NUGET,
                     (String) objCoordinates.get("packageId"),
                     (String) objCoordinates.get("version")));
         }

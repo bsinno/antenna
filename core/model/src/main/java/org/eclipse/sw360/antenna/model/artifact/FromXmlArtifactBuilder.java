@@ -91,7 +91,7 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
 
         @Override
         public Coordinate build() {
-            return new MavenCoordinate(artifactId, groupId, version);
+            return new Coordinate(Coordinate.Types.MAVEN, groupId, artifactId, version);
         }
     }
 
@@ -110,7 +110,7 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
 
         @Override
         public Coordinate build() {
-            return new BundleCoordinate(symbolicName, bundleVersion);
+            return new Coordinate(Coordinate.Types.P2, symbolicName, bundleVersion);
         }
     }
 
@@ -137,7 +137,7 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
 
         @Override
         public Coordinate build() {
-            return new JavaScriptCoordinate(name, artifactId, version);
+            return new Coordinate(Coordinate.Types.NPM, name, artifactId, version); // TODO: this is broken
         }
     }
 
@@ -158,7 +158,7 @@ public class FromXmlArtifactBuilder implements IArtifactBuilder {
 
         @Override
         public Coordinate build() {
-            return new DotNetCoordinate(packageId, version);
+            return new Coordinate(Coordinate.Types.NUGET, packageId, version);
         }
     }
 }

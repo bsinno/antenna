@@ -15,7 +15,7 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +67,7 @@ public class MavenInvokerRequester extends IArtifactRequester {
     }
 
     @Override
-    public Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation)
+    public Optional<File> requestFile(Coordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation)
             throws AntennaExecutionException {
 
         File expectedJarFile = getExpectedJarFile(mavenCoordinate, targetDirectory, classifierInformation);
@@ -92,7 +92,7 @@ public class MavenInvokerRequester extends IArtifactRequester {
         return Optional.of(getExpectedJarFile(mavenCoordinate, targetDirectory, classifierInformation));
     }
 
-    private boolean callMavenInvoker(MavenCoordinate mavenCoordinate, Path targetDirectory, String classifier) {
+    private boolean callMavenInvoker(Coordinate mavenCoordinate, Path targetDirectory, String classifier) {
         final List<String> mvnDownloadCmd = buildBasicMvnDownloadCmd(mavenCoordinate, targetDirectory);
         sourceRepositoryUrl
                 .ifPresent(url -> mvnDownloadCmd.add(String.format(MVN_ARG_REPOS, url.toString())));
@@ -103,11 +103,11 @@ public class MavenInvokerRequester extends IArtifactRequester {
         return callMavenInvocationRequest(request);
     }
 
-    private List<String> buildBasicMvnDownloadCmd(MavenCoordinate mavenCoordinate, Path targetDirectory) {
+    private List<String> buildBasicMvnDownloadCmd(Coordinate mavenCoordinate, Path targetDirectory) {
         List<String> mvnDownloadCmd = new ArrayList<>();
 
-        mvnDownloadCmd.add(String.format(MVN_ARG_GROUP_ID, mavenCoordinate.getGroupId()));
-        mvnDownloadCmd.add(String.format(MVN_ARG_ARTIFACT_ID, mavenCoordinate.getArtifactId()));
+        mvnDownloadCmd.add(String.format(MVN_ARG_GROUP_ID, mavenCoordinate.getNamespace()));
+        mvnDownloadCmd.add(String.format(MVN_ARG_ARTIFACT_ID, mavenCoordinate.getName()));
         mvnDownloadCmd.add(String.format(MVN_ARG_VERSION, mavenCoordinate.getVersion()));
         mvnDownloadCmd.add(String.format(MVN_ARG_DEST, targetDirectory));
         mvnDownloadCmd.add(MVN_DOWNLOAD_CMD);
@@ -129,7 +129,7 @@ public class MavenInvokerRequester extends IArtifactRequester {
         return request;
     }
 
-    private File getExpectedJarFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
+    private File getExpectedJarFile(Coordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
         String jarBaseName = getExpectedJarBaseName(mavenCoordinate, classifierInformation);
         return new File(targetDirectory.toFile(), jarBaseName);
     }

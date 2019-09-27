@@ -10,9 +10,7 @@
  */
 package org.eclipse.sw360.antenna.maven;
 
-import com.github.packageurl.PackageURL;
-import com.github.packageurl.PackageURLBuilder;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,16 +25,16 @@ public class IArtifactRequesterTest extends AntennaTestWithMockedContext {
 
     private IArtifactRequester artifactRequester = new IArtifactRequester() {
         @Override
-        public Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
+        public Optional<File> requestFile(Coordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
             return Optional.empty();
         }
     };
 
-    private MavenCoordinate mavenCoordinate;
+    private Coordinate mavenCoordinate;
 
     @Before
     public void before() throws Exception {
-        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
+        mavenCoordinate = new Coordinate("artifactId", "groupId", "version");
     }
 
     @Test

@@ -12,7 +12,7 @@
 package org.eclipse.sw360.antenna.drools.testing;
 
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.coordinates.*;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseThreatGroup;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
@@ -62,7 +62,7 @@ public final class Mappings {
                     if (row.size() < 5) {
                         throw new RuntimeException("Maven coordinates need to specify groupId, artifactId and version in that order");
                     }
-                    return new MavenCoordinate(row.get(3), row.get(2), row.get(4));
+                    return new Coordinate(Coordinate.Types.MAVEN, row.get(2), row.get(3), row.get(4));
                 });
                 put("generic", row -> {
                     if (row.size() < 4) {
@@ -77,19 +77,19 @@ public final class Mappings {
                     if (row.size() < 4) {
                         throw new RuntimeException(".NET coordinates need to specify packageId and version in that order");
                     }
-                    return new DotNetCoordinate(row.get(2), row.get(3));
+                    return new Coordinate(Coordinate.Types.NUGET, row.get(2), row.get(3));
                 });
                 put("bundle", row -> {
                     if (row.size() < 4) {
                         throw new RuntimeException("Bundle coordinates need to specify BundleSymbolicName and BundleVersion in that order");
                     }
-                    return new BundleCoordinate(row.get(2), row.get(3));
+                    return new Coordinate(Coordinate.Types.P2, row.get(2), row.get(3));
                 });
                 put("javascript", row -> {
                     if (row.size() < 5) {
                         throw new RuntimeException("JavaScript coordinates need to specify artifactId, name and version in that order");
                     }
-                    return new JavaScriptCoordinate(row.get(2), row.get(3), row.get(4));
+                    return new Coordinate(Coordinate.Types.NPM, row.get(2), row.get(3), row.get(4));
                 });
             }};
 

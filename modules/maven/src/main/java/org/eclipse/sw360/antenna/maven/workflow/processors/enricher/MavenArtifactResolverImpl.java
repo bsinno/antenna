@@ -25,7 +25,6 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactJar;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactSourceJar;
 import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.util.ProxySettings;
 import org.slf4j.Logger;
@@ -129,25 +128,25 @@ public class MavenArtifactResolverImpl {
             return;
         }
         final Coordinate coordinate = oMavenPurl.get();
-        if (coordinate.getName() == null || coordinate.getNamespace() == null || ! (coordinate instanceof MavenCoordinate)) {
+        if (coordinate.getName() == null ||
+                coordinate.getNamespace() == null ||
+                ! (Coordinate.Types.MAVEN.equals(coordinate.getType()))) {
             return;
         }
 
-        final MavenCoordinate mavenCoordinate = (MavenCoordinate) coordinate;
-
         // Try to download source with preferred qualifier first
         if (!artifact.getSourceFile().isPresent() && preferredSourceQualifier != null) {
-            Optional<File> sourceJar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, new ClassifierInformation(preferredSourceQualifier, true));
+            Optional<File> sourceJar = artifactRequester.requestFile(coordinate, dependencyTargetDirectory, new ClassifierInformation(preferredSourceQualifier, true));
             sourceJar.ifPresent(sourceJarFile -> artifact.addFact(new ArtifactSourceJar(sourceJarFile.toPath())));
         }
 
         if (!artifact.getSourceFile().isPresent()) {
-            Optional<File> sourceJar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_SOURCE_JAR);
+            Optional<File> sourceJar = artifactRequester.requestFile(coordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_SOURCE_JAR);
             sourceJar.ifPresent(sourceJarFile -> artifact.addFact(new ArtifactSourceJar(sourceJarFile.toPath())));
         }
 
         if (!artifact.getFile().isPresent()) {
-            Optional<File> jar = artifactRequester.requestFile(mavenCoordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_JAR);
+            Optional<File> jar = artifactRequester.requestFile(coordinate, dependencyTargetDirectory, ClassifierInformation.DEFAULT_JAR);
             jar.ifPresent(jarFile -> artifact.addFact(new ArtifactJar(jarFile.toPath())));
         }
 

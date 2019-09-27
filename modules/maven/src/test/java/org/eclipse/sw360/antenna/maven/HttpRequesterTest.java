@@ -10,7 +10,7 @@
  */
 package org.eclipse.sw360.antenna.maven;
 
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.eclipse.sw360.antenna.util.HttpHelper;
 import org.eclipse.sw360.antenna.util.ProxySettings;
@@ -42,7 +42,7 @@ public class HttpRequesterTest extends AntennaTestWithMockedContext {
 
     private HttpHelper httpHelperMock = Mockito.mock(HttpHelper.class);
     private HttpRequester hr;
-    private MavenCoordinate mavenCoordinate;
+    private Coordinate mavenCoordinate;
     private ClassifierInformation classifierInformation;
 
     @Parameterized.Parameters(name = "{index}: isSource={0}")
@@ -57,7 +57,7 @@ public class HttpRequesterTest extends AntennaTestWithMockedContext {
     @Before
     public void before() throws Exception {
         this.baseBefore();
-        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
+        mavenCoordinate = new Coordinate(Coordinate.Types.MAVEN, "groupId", "artifactId", "version");
 
         ProxySettings proxySettings = new ProxySettings(false, null, 0);
 

@@ -18,7 +18,6 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIssues;
 import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.Issue;
 import org.eclipse.sw360.antenna.model.xml.generated.Issues;
 import org.eclipse.sw360.antenna.model.xml.generated.SecurityIssueStatus;
@@ -92,7 +91,7 @@ public class SecurityIssueValidatorTest extends AntennaTestWithMockedContext {
     }
 
     private Coordinate mkArtifactIdentifier() {
-        return new MavenCoordinate("test-artifact","com.test","1.0");
+        return new Coordinate(Coordinate.Types.MAVEN, "com.test", "test-artifact", "1.0");
     }
 
     @Test

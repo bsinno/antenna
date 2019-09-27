@@ -11,7 +11,7 @@
 package org.eclipse.sw360.antenna.maven;
 
 import org.eclipse.sw360.antenna.exceptions.FailedToDownloadException;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.util.HttpHelper;
 import org.eclipse.sw360.antenna.util.ProxySettings;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class HttpRequester extends IArtifactRequester {
     }
 
     @Override
-    public Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
+    public Optional<File> requestFile(Coordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
         String jarBaseName = getExpectedJarBaseName(mavenCoordinate, classifierInformation);
         File localJarFile = targetDirectory.resolve(jarBaseName).toFile();
 
@@ -67,7 +67,7 @@ public class HttpRequester extends IArtifactRequester {
         return downloadedFile;
     }
 
-    private Optional<File> downloadFileFromUserUrl(MavenCoordinate mavenCoordinate, Path targetDirectory, String jarBaseName) {
+    private Optional<File> downloadFileFromUserUrl(Coordinate mavenCoordinate, Path targetDirectory, String jarBaseName) {
         if (sourceRepositoryUrl.isPresent()) {
             String jarUrl = convertToJarUrlTemplate(mavenCoordinate, jarBaseName, sourceRepositoryUrl.get().toString());
             return tryFileDownload(jarUrl, targetDirectory, jarBaseName);
@@ -75,7 +75,7 @@ public class HttpRequester extends IArtifactRequester {
         return Optional.empty();
     }
 
-    private String convertToJarUrlTemplate(MavenCoordinate mavenCoordinate, String jarBaseName, String repoTemplate) {
+    private String convertToJarUrlTemplate(Coordinate mavenCoordinate, String jarBaseName, String repoTemplate) {
         String enrichedTemplate = repoTemplate;
         enrichedTemplate += repoTemplate.endsWith("/") ? "" : "/";
         enrichedTemplate += GROUP_ID_PLACEHOLDER + "/" + ARTIFACT_ID_PLACEHOLDER + "/" + VERSION_PLACEHOLDER + "/";
@@ -92,14 +92,14 @@ public class HttpRequester extends IArtifactRequester {
         }
     }
 
-    private String getJarUrl(MavenCoordinate mavenCoordinate, String remoteFileName, String repoTemplate) {
+    private String getJarUrl(Coordinate mavenCoordinate, String remoteFileName, String repoTemplate) {
         // Construct URL (substitute in groupID, artifactID and version
         // NOTE: There should be no dots in the groupID. Dots delimit
         // directories, so are converted to slashes.
         String repo = repoTemplate
-                .replace(GROUP_ID_PLACEHOLDER, mavenCoordinate.getGroupId()
+                .replace(GROUP_ID_PLACEHOLDER, mavenCoordinate.getNamespace()
                         .replace('.', '/'))
-                .replace(ARTIFACT_ID_PLACEHOLDER, mavenCoordinate.getArtifactId())
+                .replace(ARTIFACT_ID_PLACEHOLDER, mavenCoordinate.getName())
                 .replace(VERSION_PLACEHOLDER, mavenCoordinate.getVersion());
 
         return repo + remoteFileName;

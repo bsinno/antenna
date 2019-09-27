@@ -15,7 +15,7 @@ import org.eclipse.sw360.antenna.api.IPolicyEvaluation;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaConfigurationException;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.After;
@@ -140,7 +140,7 @@ public class AbstractComplianceCheckerTest extends AntennaTestWithMockedContext 
 
     private Set<Artifact> mkSingletonArtifact(String name){
         final Artifact artifact = new Artifact("forTest");
-        artifact.addCoordinate(new MavenCoordinate(name + "ArtifactId",name + "GroupId", "1.0"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, name + "GroupId", name + "ArtifactId", "1.0"));
         return Collections.singleton(artifact);
     }
 

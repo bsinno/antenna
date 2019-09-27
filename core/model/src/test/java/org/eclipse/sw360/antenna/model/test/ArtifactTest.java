@@ -13,8 +13,7 @@ package org.eclipse.sw360.antenna.model.test;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.util.ArtifactLicenseUtils;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseOperator;
@@ -47,7 +46,7 @@ public class ArtifactTest {
         mavenSourcesJar = temp.newFile("sourcesJar.jar").toPath();
 
         artifact = new Artifact("Test")
-                .addCoordinate(new MavenCoordinate("artifactId", "groupId", "version"))
+                .addCoordinate(new Coordinate(Coordinate.Types.MAVEN, "groupId", "artifactId", "version"))
                 .addFact(new ArtifactCoordinates("name", "version"))
                 .addFact(new ArtifactFile(jar))
                 .addFact(new ArtifactSourceFile(mavenSourcesJar))
@@ -71,8 +70,8 @@ public class ArtifactTest {
         assertThat(new ArtifactCoordinates("name", null).matches(artifact)).isTrue();
         assertThat(new ArtifactCoordinates("name", "*").matches(artifact)).isTrue();
         assertThat(new ArtifactCoordinates("name", "v*n").matches(artifact)).isTrue();
-        assertThat(new ArtifactCoordinates(new BundleCoordinate("name", "version")).matches(artifact)).isFalse();
-        assertThat(new ArtifactCoordinates(new MavenCoordinate("artifactId", "groupId", "version")).matches(artifact)).isTrue();
+        assertThat(new ArtifactCoordinates(new Coordinate(Coordinate.Types.P2, "name", "version")).matches(artifact)).isFalse();
+        assertThat(new ArtifactCoordinates(new Coordinate(Coordinate.Types.MAVEN, "groupId", "artifactId", "version")).matches(artifact)).isTrue();
 
         File found = artifact.askForGet(ArtifactFile.class).get().toFile();
         assertThat(found).isEqualTo(jar.toFile());

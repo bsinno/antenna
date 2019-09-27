@@ -13,7 +13,7 @@ package org.eclipse.sw360.antenna.sw360.workflow.generator;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaException;
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.*;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.License;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseInformation;
 import org.eclipse.sw360.antenna.model.xml.generated.LicenseStatement;
@@ -110,7 +110,7 @@ public class SW360UpdaterTest extends AntennaTestWithMockedContext {
         };
         Artifact artifact = new Artifact("JSON");
         artifact.setProprietary(false);
-        artifact.addCoordinate(new MavenCoordinate("artifactId(" + name + ")", "org.group.id", "1.2.3"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, "org.group.id", "artifactId(" + name + ")", "1.2.3"));
         artifact.addFact(new DeclaredLicenseInformation(licenseInformation));
         artifact.addFact(new ObservedLicenseInformation(licenseInformation));
         artifact.addFact(new ArtifactSourceUrl(sourceUrl));
@@ -133,7 +133,7 @@ public class SW360UpdaterTest extends AntennaTestWithMockedContext {
     public void testMainLicenseIsEmptyAndFinalLicenseNull() {
         Artifact artifact = new Artifact("JSON");
         artifact.setProprietary(false);
-        artifact.addCoordinate(new MavenCoordinate("artifactId(test)", "org.group.id", "1.2.3"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, "org.group.id", "artifactId(test)", "1.2.3"));
         artifact.addFact(new DeclaredLicenseInformation(new LicenseStatement()));
 
         SW360Component sw360Component = new SW360Component();

@@ -21,7 +21,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.repository.RepositorySystem;
 import org.eclipse.sw360.antenna.api.exceptions.AntennaExecutionException;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,16 +64,16 @@ public class MavenRuntimeRequester extends IArtifactRequester {
     }
 
     @Override
-    public Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
+    public Optional<File> requestFile(Coordinate mavenCoordinate, Path targetDirectory, ClassifierInformation classifierInformation) {
         if (classifierInformation.isSource) {
             return requestFile(mavenCoordinate, targetDirectory, "java-source", classifierInformation);
         }
         return requestFile(mavenCoordinate, targetDirectory, "jar", classifierInformation);
     }
 
-    private Optional<File> requestFile(MavenCoordinate mavenCoordinate, Path targetDirectory, String type, ClassifierInformation classifier) {
-        String groupId = mavenCoordinate.getGroupId();
-        String artifactId = mavenCoordinate.getArtifactId();
+    private Optional<File> requestFile(Coordinate mavenCoordinate, Path targetDirectory, String type, ClassifierInformation classifier) {
+        String groupId = mavenCoordinate.getNamespace();
+        String artifactId = mavenCoordinate.getName();
         String version = mavenCoordinate.getVersion();
 
         Artifact mvnArtifact = classifier.classifier.isEmpty()

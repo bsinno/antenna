@@ -11,7 +11,7 @@
 package org.eclipse.sw360.antenna.report;
 
 import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.reporting.MessageType;
 import org.eclipse.sw360.antenna.model.reporting.ProcessingMessage;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class ReporterTest {
     public void init(){
         reporter = new Reporter(folder.getRoot().toPath());
 
-        id = new ArtifactCoordinates(new MavenCoordinate("testAid","testGid","testVer"));
+        id = new ArtifactCoordinates(new Coordinate(Coordinate.Types.MAVEN, "testGid", "testAid", "testVer"));
 
         msg = "Some processing message message";
     }

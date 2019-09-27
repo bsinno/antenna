@@ -18,7 +18,6 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactCoordinates;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactSourceFile;
 import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.After;
 import org.junit.Before;
@@ -76,8 +75,8 @@ public class SourceValidatorTest extends AntennaTestWithMockedContext {
         validator.configure(configMap);
     }
 
-    private MavenCoordinate mkArtifactIdentifier() {
-        return new MavenCoordinate("source-validator-test-artifact","org","1.0");
+    private Coordinate mkArtifactIdentifier() {
+        return new Coordinate(Coordinate.Types.MAVEN, "org", "source-validator-test-artifact", "1.0");
     }
 
     private Artifact mkArtifact(File sourceJar) {

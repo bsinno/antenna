@@ -11,8 +11,7 @@
 package org.eclipse.sw360.antenna.validators.workflow.processors;
 
 import org.eclipse.sw360.antenna.model.artifact.Artifact;
-import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,26 +54,26 @@ public class CoordinatesValidatorTest extends AntennaTestWithMockedContext {
 
     @Test
     public void validateCoordinatesTestEmptyMvn() {
-        artifact.addCoordinate(new MavenCoordinate(null,null,null));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, null,null,null));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(1);
     }
 
     @Test
     public void validateCoordinatesTestMvn() {
-        artifact.addCoordinate(new MavenCoordinate("test", "test", "test"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, "test", "test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2() {
-        artifact.addCoordinate(new BundleCoordinate("test", "test"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.P2, "test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 
     @Test
     public void validateCoordinatesTestP2andMvn() {
-        artifact.addCoordinate(new MavenCoordinate("test", "test", "test"));
-        artifact.addCoordinate(new BundleCoordinate("test", "test"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, "test", "test", "test"));
+        artifact.addCoordinate(new Coordinate(Coordinate.Types.P2, "test", "test"));
         assertThat(validator.evaluate(artifacts).getEvaluationResults().size()).isEqualTo(0);
     }
 

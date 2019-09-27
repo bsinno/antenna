@@ -19,7 +19,7 @@ import org.eclipse.sw360.antenna.model.artifact.Artifact;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFile;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactMatchingMetadata;
 import org.eclipse.sw360.antenna.model.artifact.facts.java.ArtifactPathnames;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.model.xml.generated.MatchState;
 
 import java.util.List;
@@ -69,10 +69,11 @@ public class MvnDependencyTreeAnalyzer extends AbstractAnalyzer {
         return antennaArtifact;
     }
 
-    private MavenCoordinate getMavenCoordinate(DependencyNode node) {
-        return new MavenCoordinate(
-                node.getArtifact().getArtifactId(),
+    private Coordinate getMavenCoordinate(DependencyNode node) {
+        return new Coordinate(
+                Coordinate.Types.MAVEN,
                 node.getArtifact().getGroupId(),
+                node.getArtifact().getArtifactId(),
                 node.getArtifact().getVersion());
     }
 

@@ -14,7 +14,7 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.utils.cli.CommandLineException;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.eclipse.sw360.antenna.testing.AntennaTestWithMockedContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,11 +44,11 @@ public class MavenInvokerRequesterTest extends AntennaTestWithMockedContext {
 
     private MavenInvokerRequester mir;
 
-    private MavenCoordinate mavenCoordinate;
+    private Coordinate mavenCoordinate;
 
     @Before
     public void before() throws Exception {
-        mavenCoordinate = new MavenCoordinate("artifactId", "groupId", "version");
+        mavenCoordinate = new Coordinate(Coordinate.Types.MAVEN, "groupId", "artifactId", "version");
 
         System.setProperty("maven.home", temporaryFolder.newFolder("m2").toString());
 

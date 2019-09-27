@@ -16,8 +16,7 @@ import org.eclipse.sw360.antenna.model.artifact.ArtifactSelector;
 import org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorAndSet;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactFilename;
 import org.eclipse.sw360.antenna.model.artifact.facts.ArtifactIdentifier;
-import org.eclipse.sw360.antenna.model.coordinates.BundleCoordinate;
-import org.eclipse.sw360.antenna.model.coordinates.MavenCoordinate;
+import org.eclipse.sw360.antenna.model.coordinates.Coordinate;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -205,10 +204,10 @@ public class ArtifactSelectorTest {
             artifact.addFact(new ArtifactFilename(defaultFileName, hash));
         }
         if (artifactId != null || groupId != null || version != null) {
-            artifact.addCoordinate(new MavenCoordinate(artifactId, groupId, version));
+            artifact.addCoordinate(new Coordinate(Coordinate.Types.MAVEN, groupId, artifactId, version));
         }
         if (symbolicName != null || bundleVersion != null) {
-                artifact.addCoordinate(new BundleCoordinate(symbolicName, bundleVersion));
+                artifact.addCoordinate(new Coordinate(Coordinate.Types.P2, symbolicName, bundleVersion));
         }
         return artifact;
     }
@@ -221,10 +220,10 @@ public class ArtifactSelectorTest {
             identifierSet.add(new ArtifactFilename(filename, hash));
         }
         if (artifactId != null || groupId != null || version != null) {
-            identifierSet.add(new ArtifactCoordinates(new MavenCoordinate(artifactId, groupId, version)));
+            identifierSet.add(new ArtifactCoordinates(new Coordinate(Coordinate.Types.MAVEN, groupId, artifactId, version)));
         }
         if (symbolicName != null || bundleVersion != null) {
-            identifierSet.add(new ArtifactCoordinates(new BundleCoordinate(symbolicName, bundleVersion)));
+            identifierSet.add(new ArtifactCoordinates(new Coordinate(Coordinate.Types.P2, symbolicName, bundleVersion)));
         }
         return new ArtifactSelectorAndSet(identifierSet);
     }

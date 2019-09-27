@@ -21,17 +21,35 @@ import static org.eclipse.sw360.antenna.model.artifact.ArtifactSelectorHelper.co
 public class Coordinate {
     private final PackageURL packageURL;
 
-    /*
-     * Package protected constructor to enforce the usage of the builder but to also allow extension in this package
-     */
-    Coordinate(PackageURL packageURL) {
+    public Coordinate(PackageURL packageURL) {
         this.packageURL = packageURL;
     }
 
-    /*
-     * Package protected constructor to enforce the usage of the builder but to also allow extension in this package
-     */
-    Coordinate(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
+    public Coordinate(String name, String version) {
+        try {
+            packageURL = new PackageURL(Types.GENERIC, null, name, version, null, null);
+        } catch (MalformedPackageURLException e) {
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
+        }
+    }
+
+    public Coordinate(String type, String namespace, String name, String version) {
+        try {
+            packageURL = new PackageURL(type, namespace, name, version, null, null);
+        } catch (MalformedPackageURLException e) {
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
+        }
+    }
+
+    public Coordinate(String type, String name, String version) {
+        try {
+            packageURL = new PackageURL(type, null, name, version, null, null);
+        } catch (MalformedPackageURLException e) {
+            throw new AntennaExecutionException("Failed to create PackageURL in Coordinate", e);
+        }
+    }
+
+    public Coordinate(String type, String namespace, String name, String version, TreeMap<String, String> qualifiers, String subpath) {
         try {
             packageURL = new PackageURL(type, namespace, name, version, qualifiers, subpath);
         } catch (MalformedPackageURLException e) {
@@ -198,19 +216,6 @@ public class Coordinate {
 
         public Coordinate build() {
             try {
-                final PackageURL packageURL = packageURLBuilder.build();
-                if (MavenCoordinate.TYPE.equals(packageURL.getType())){
-                    return new MavenCoordinate(packageURL);
-                }
-                if (BundleCoordinate.TYPE.equals(packageURL.getType())){
-                    return new BundleCoordinate(packageURL);
-                }
-                if (JavaScriptCoordinate.TYPE.equals(packageURL.getType())){
-                    return new JavaScriptCoordinate(packageURL);
-                }
-                if (DotNetCoordinate.TYPE.equals(packageURL.getType())){
-                    return new DotNetCoordinate(packageURL);
-                }
                 return new Coordinate(packageURLBuilder.build());
             } catch (MalformedPackageURLException e) {
                 throw new AntennaExecutionException("Failed to build PackageURL in Builder for Coordinate", e);
