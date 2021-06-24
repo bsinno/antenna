@@ -16,6 +16,18 @@ Adding ${antennaMavenPluginName} to your project's list of plugins enables the $
 </plugin>
 ```
 
+If you want to specify a custom repository to get the plugin from, add them either in your `settings` or `pom` file,
+following the [instructions](https://maven.apache.org/guides/mini/guide-multiple-repositories.html) in the documentation
+of Maven.
+
+```xml
+<repository>
+    <id>myRepo</id>
+    <name>your custom repo</name>
+    <url>${antennaMavenRepoAddition}</url>
+</repository>
+```
+
 You can execute the plugin either with the command line call:
 
 ```
