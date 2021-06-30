@@ -32,6 +32,7 @@
         <antennaCliJavaFilename>org.eclipse.sw360.antenna.frontend.cli.AntennaCLIFrontend</antennaCliJavaFilename>
         <antennaMavenGroupId>org.eclipse.sw360.antenna</antennaMavenGroupId>
         <antennaMavenPluginName>antenna-maven-plugin</antennaMavenPluginName>
+        <antennaMavenRepoAddition>https://mycustomrepo.com</antennaMavenRepoAddition>
         <antennaGradlePluginName>antenna-gradle-plugin</antennaGradlePluginName>
         <antennaGradleJavaFilename>org.eclipse.sw360.antenna.frontend.gradle.GradlePlugin</antennaGradleJavaFilename>
         <antennaGradleRepoAddition></antennaGradleRepoAddition>
